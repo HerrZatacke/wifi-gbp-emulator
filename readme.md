@@ -15,7 +15,7 @@ Tutorial on how to implement Websockets with an ESP2866 by [ttapa: WebSocket com
 * Websockets serving received printer packages
 
 
-## Demo
+## Demo Video
 [![Video of the first prototype](docs/video.jpg "Video of the first prototype")](https://www.youtube.com/watch?v=HHPHkeio85U)
 
 
