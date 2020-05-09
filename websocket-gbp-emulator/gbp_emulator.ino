@@ -21,6 +21,8 @@
 #define GBP_SI_PIN       3        // Pin 3  Gelb      : Serial INPUT
 #define GBP_SC_PIN       2        // Pin 5  Weiss     : Serial Clock (Interrupt)
 
+// GBP_SC_PIN /!\ pin 2 is also LED_BUILTIN on an ESP2866, so possibly do not use that pin to blink :)
+
 #define GBP_PACKET_PRETEND_PRINT_TIME_MS 2000 // ms to pretend to print for
 
 // You can disable the LCD screen with no problems. It only displays my name

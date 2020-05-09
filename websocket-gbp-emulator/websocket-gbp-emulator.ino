@@ -9,7 +9,6 @@ WebSocketsServer webSocket(81);
 
 void setup() {
   Serial.begin(115200);
-  Serial.println(LED_BUILTIN, DEC);
   setupWifi();
   startWebSocket();
   gbp_emulator_setup();
