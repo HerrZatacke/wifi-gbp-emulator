@@ -17,9 +17,16 @@
 //  \_5__3__1_/   (at cable)
 //
 //                  | Arduino Pin | Gameboy Link Pin  |
+
+#if 0
 #define GBP_SO_PIN       4        // Pin 2  Blau      : Serial OUTPUT
 #define GBP_SI_PIN       3        // Pin 3  Gelb      : Serial INPUT
 #define GBP_SC_PIN       2        // Pin 5  Weiss     : Serial Clock (Interrupt)
+#else
+#define GBP_SO_PIN       13       // Pin 2  Blau      : ESP-pin 7 MOSI (Serial OUTPUT) -> Arduino 13
+#define GBP_SI_PIN       12       // Pin 3  Gelb      : ESP-pin 6 MISO (Serial INPUT)  -> Arduino 12
+#define GBP_SC_PIN       14       // Pin 5  Weiss     : ESP-pin 5 CLK  (Serial Clock)  -> Arduino 14
+#endif
 
 // GBP_SC_PIN /!\ pin 2 is also LED_BUILTIN on an ESP2866, so possibly do not use that pin to blink :)
 
