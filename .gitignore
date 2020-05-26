@@ -1,1 +1,4 @@
 .idea/
+.DS_Store
+websocket-gbp-emulator/data/*
+!websocket-gbp-emulator/data/conf.json.sample
