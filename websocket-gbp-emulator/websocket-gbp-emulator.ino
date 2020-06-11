@@ -1,5 +1,5 @@
 
-#define LED_BLINK_PIN 5
+#define LED_BLINK_PIN 2
 #define WIFI_BLINK_DELAY 2000
 
 #include <ESP8266WiFi.h>

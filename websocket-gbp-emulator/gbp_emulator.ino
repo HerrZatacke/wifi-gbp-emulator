@@ -22,8 +22,6 @@
 #define GBP_SI_PIN       12       // Pin 3            : ESP-pin 6 MISO (Serial INPUT)  -> Arduino 12
 #define GBP_SC_PIN       14       // Pin 5            : ESP-pin 5 CLK  (Serial Clock)  -> Arduino 14
 
-// GBP_SC_PIN /!\ pin 2 is also LED_BUILTIN on an ESP2866, so possibly do not use that pin to blink :)
-
 #define GBP_PACKET_PRETEND_PRINT_TIME_MS 2000 // ms to pretend to print for
 
 // You can disable the LCD screen with no problems. It only displays my name
