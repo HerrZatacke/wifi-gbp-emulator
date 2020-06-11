@@ -1,13 +1,10 @@
 //*
 
-#include "FS.h"
-#include "ArduinoJson.h"
-
 void setupWifi() {
   StaticJsonDocument<256> conf;
   SPIFFS.begin();
   
-  File confFile = SPIFFS.open( "/conf.json", "r"); // Datei zum lesen öffnen
+  File confFile = SPIFFS.open( "/conf.json", "r");
   while (!confFile) {
     Serial.println("opening conf.json failed");
     delay(1250);
@@ -33,8 +30,7 @@ void setupWifi() {
   }
 
   Serial.println(F("WiFi connected"));
-
-  // Print the IP address
-  Serial.println(WiFi.localIP());  
+  Serial.print(F("http://"));
+  Serial.println(WiFi.localIP());
 }
 /**/
