@@ -19,13 +19,13 @@
 //                  | Arduino Pin | Gameboy Link Pin  |
 
 #if 0
-#define GBP_SO_PIN       4        // Pin 2  Blau      : Serial OUTPUT
-#define GBP_SI_PIN       3        // Pin 3  Gelb      : Serial INPUT
-#define GBP_SC_PIN       2        // Pin 5  Weiss     : Serial Clock (Interrupt)
+#define GBP_SO_PIN       4        // Pin 2            : Serial OUTPUT
+#define GBP_SI_PIN       3        // Pin 3            : Serial INPUT
+#define GBP_SC_PIN       2        // Pin 5            : Serial Clock (Interrupt)
 #else
-#define GBP_SO_PIN       13       // Pin 2  Blau      : ESP-pin 7 MOSI (Serial OUTPUT) -> Arduino 13
-#define GBP_SI_PIN       12       // Pin 3  Gelb      : ESP-pin 6 MISO (Serial INPUT)  -> Arduino 12
-#define GBP_SC_PIN       14       // Pin 5  Weiss     : ESP-pin 5 CLK  (Serial Clock)  -> Arduino 14
+#define GBP_SO_PIN       13       // Pin 2            : ESP-pin 7 MOSI (Serial OUTPUT) -> Arduino 13
+#define GBP_SI_PIN       12       // Pin 3            : ESP-pin 6 MISO (Serial INPUT)  -> Arduino 12
+#define GBP_SC_PIN       14       // Pin 5            : ESP-pin 5 CLK  (Serial Clock)  -> Arduino 14
 #endif
 
 // GBP_SC_PIN /!\ pin 2 is also LED_BUILTIN on an ESP2866, so possibly do not use that pin to blink :)
@@ -548,7 +548,7 @@ static bool gbp_printer_init(struct gbp_printer_t *ptr)
 /**************************************************************
  **************************************************************/
 
-void 
+void
 #ifdef ESP8266
 ICACHE_RAM_ATTR
 #endif
@@ -652,12 +652,12 @@ void gbp_emulator_loop() {
           gbp_printer.gbp_printer_status.print_buffer_full,
           gbp_printer.gbp_printer_status.printer_busy,
           gbp_printer.gbp_printer_status.checksum_error
-        );  
+        );
         break;
       default:
         sprintf(messagePacket, "!{\"command\":\"UKNO\"}");
     }
-    
+
     webSocket.broadcastTXT(messagePacket);
 
     // Indicate To The Byte Scanner and the Message Parser to scan for new packet
@@ -683,7 +683,7 @@ void gbp_emulator_loop() {
         */
 
         String imageData = "";
-        
+
         for (uint16_t i = 0 ; i < gbp_printer.gbp_packet.data_length ; i++)
         { // Display the data payload encoded in hex
           uint8_t data_8bit = gbp_printer.gbp_packet.data_ptr[i];
@@ -704,8 +704,8 @@ void gbp_emulator_loop() {
           }
         }
 
-        
-        
+
+
         break;
       }
       case GBP_COMMAND_PRINT:
@@ -721,7 +721,7 @@ void gbp_emulator_loop() {
           webSocket.broadcastTXT("# Finished Pretending To Print for fun!");
           webSocket.broadcastTXT("# GAMEBOY PRINTER EMULATION PROJECT");
           webSocket.broadcastTXT("# By Brian Khuu (2017)");
-          
+
           gbp_printer.uptime_til_pretend_print_finish_ms = 0;
           gbp_printer.gbp_printer_status.printer_busy = false;
         }
