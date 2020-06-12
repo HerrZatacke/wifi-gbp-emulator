@@ -1,3 +1,5 @@
+ESP8266WebServer server(80);
+
 bool handleFileRead(String path) {
   path = "/w" + path;
 
@@ -25,8 +27,6 @@ String getContentType(String filename) {
   else if (filename.endsWith(".ico")) return "image/x-icon";
   return "text/plain";
 }
-
-ESP8266WebServer server(80);
 
 void webserver_setup() {
   server.onNotFound([]() {
