@@ -13,6 +13,7 @@ WebSocketsServer webSocket(81);
 void setup() {
   Serial.begin(115200);
   setupWifi();
+  mdns_setup();
   webserver_setup();
   printerLog_setup();
   startWebSocket();
@@ -26,4 +27,5 @@ void loop() {
   wifi_blink_loop();
   webserver_loop();
   printerLog_loop();
+  mdns_loop();
 }
