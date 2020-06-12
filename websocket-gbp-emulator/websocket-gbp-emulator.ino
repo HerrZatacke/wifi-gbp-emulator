@@ -14,6 +14,7 @@ void setup() {
   Serial.begin(115200);
   setupWifi();
   webserver_setup();
+  printerLog_setup();
   startWebSocket();
   gbp_emulator_setup();
   wifi_blink_setup();
@@ -24,4 +25,5 @@ void loop() {
   gbp_emulator_loop();
   wifi_blink_loop();
   webserver_loop();
+  printerLog_loop();
 }
