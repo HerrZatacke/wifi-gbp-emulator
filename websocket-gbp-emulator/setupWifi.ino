@@ -1,9 +1,8 @@
-//*
 
 void setupWifi() {
   StaticJsonDocument<256> conf;
   SPIFFS.begin();
-  
+
   File confFile = SPIFFS.open( "/conf.json", "r");
   while (!confFile) {
     Serial.println("opening conf.json failed");
@@ -23,7 +22,7 @@ void setupWifi() {
 
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
-  
+
   while (WiFi.status() != WL_CONNECTED) {
     delay(250);
     Serial.print(F("."));
@@ -33,4 +32,3 @@ void setupWifi() {
   Serial.print(F("http://"));
   Serial.println(WiFi.localIP());
 }
-/**/

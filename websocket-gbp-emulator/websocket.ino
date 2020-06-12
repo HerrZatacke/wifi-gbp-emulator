@@ -1,4 +1,4 @@
-//*
+
 void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t lenght) { // When a WebSocket message is received
   switch (type) {
     case WStype_DISCONNECTED:
@@ -23,5 +23,3 @@ void startWebSocket() { // Start a WebSocket server
   webSocket.onEvent(webSocketEvent);          // if there's an incomming websocket message, go to function 'webSocketEvent'
   Serial.println("WebSocket server started.");
 }
-
-/**/
