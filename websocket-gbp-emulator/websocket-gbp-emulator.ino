@@ -22,20 +22,18 @@ void setup() {
   pinMode(GB_5V_OUT, INPUT);
   pinMode(LED_BLINK_PIN, OUTPUT);
 
-  LittleFS.begin();
-
   Serial.println("\n\n-----------------------");
   if (mode == MODE_PRINT) {
     Serial.println("Booting in printer mode");
     Serial.println("-----------------------\n");
-    printerLog_setup();
     digitalWrite(LED_BLINK_PIN, false);
-    gbp_emulator_setup();
+    fs_setup();
+    espprinter_setup();
   } else {
     Serial.println("Booting in server mode");
     Serial.println("-----------------------\n");
     digitalWrite(LED_BLINK_PIN, true);
-    printerLog_setup();
+    fs_setup();
     setupWifi();
     mdns_setup();
     webserver_setup();
@@ -44,18 +42,13 @@ void setup() {
 }
 
 void loop() {
-
   if (mode == MODE_SERVE) {
     wifi_blink_loop();
     webserver_loop();
     mdns_loop();
-  } else {
-    gbp_emulator_loop();
   }
 
   if (mode != digitalRead(GB_5V_OUT)) {
    ESP.restart();
   }
-
-  printerLog_loop();
 }

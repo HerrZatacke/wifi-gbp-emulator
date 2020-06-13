@@ -1,5 +1,61 @@
 #include <uri/UriBraces.h>
 
+// stream binary dump data to web-client
+void printerLog_getDump(String dump) {
+  String path = "/d/" + dump + ".txt";
+  String content = "";
+  if(LittleFS.exists(path)) {
+    File file = LittleFS.open(path, "r");
+    size_t sent = server.streamFile(file, "text/plain");
+    file.close();
+  }
+
+  server.send(404, "text/plain", "REKT");
+}
+
+// serve list of saved dumps
+String printerLog_getList() {
+  Dir dumpDir = LittleFS.openDir("/d/");
+
+  FSInfo fs_info;
+  LittleFS.info(fs_info);
+  unsigned long total = fs_info.totalBytes;
+  unsigned long used = fs_info.usedBytes;
+  unsigned long avail = total - used;
+
+  String fileName = "";
+  String fileShort = "";
+
+  // get number of files in /d/
+  unsigned int dumpcount = 0;
+  while(dumpDir.next()) {
+    dumpcount++;
+  }
+  dumpDir.rewind();
+
+  const size_t capacity = JSON_ARRAY_SIZE(dumpcount + 1) + JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(4);
+
+  DynamicJsonDocument doc(capacity);
+
+  JsonArray dumps = doc.createNestedArray("dumps");
+  JsonObject fs = doc.createNestedObject("fs");
+
+  fs["total"] = total;
+  fs["used"] = used;
+  fs["available"] = avail;
+  fs["dumpcount"] = dumpcount;
+
+  while(dumpDir.next()) {
+    fileName = dumpDir.fileName();
+    fileShort = fileName.substring(3, fileName.length() - 4);
+    dumps.add(fileShort.toInt());
+  }
+
+  String out;
+  serializeJson(doc, out);
+  return out;
+}
+
 void handleDump() {
   String dump = server.pathArg(0);
   if (dump == "list") {
