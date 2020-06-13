@@ -1,20 +1,22 @@
 #include <uri/UriBraces.h>
 
-// stream binary dump data to web-client
-void printerLog_getDump(String dump) {
-  String path = "/d/" + dump + dumpFileExtension;
-  String content = "";
-  if(LittleFS.exists(path)) {
-    File file = LittleFS.open(path, "r");
-    size_t sent = server.streamFile(file, "text/plain");
-    file.close();
+// delete all stored dumps
+void clearDumps() {
+  Dir dumpDir = LittleFS.openDir("/d/");
+
+  unsigned int dumpcount = 0;
+  while(dumpDir.next()) {
+    LittleFS.remove("/d/" + dumpDir.fileName());
+    dumpcount++;
   }
 
-  server.send(404, "text/plain", "REKT");
+  char out[24];
+  sprintf(out, "{\"deleted\":%d}", dumpcount);
+  server.send(200, "application/json", out);
 }
 
 // serve list of saved dumps
-String printerLog_getList() {
+void getDumpsList() {
   Dir dumpDir = LittleFS.openDir("/d/");
 
   FSInfo fs_info;
@@ -33,10 +35,8 @@ String printerLog_getList() {
   }
   dumpDir.rewind();
 
-  const size_t capacity = JSON_ARRAY_SIZE(dumpcount + 1) + JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(4);
-
+  const size_t capacity = 0x1fff;
   DynamicJsonDocument doc(capacity);
-
   JsonArray dumps = doc.createNestedArray("dumps");
   JsonObject fs = doc.createNestedObject("fs");
 
@@ -46,24 +46,25 @@ String printerLog_getList() {
   fs["dumpcount"] = dumpcount;
 
   while(dumpDir.next()) {
-    fileName = dumpDir.fileName();
-    fileShort = fileName.substring(3, fileName.length() - 4);
-    dumps.add(fileShort.toInt());
+    dumps.add(dumpDir.fileName());
   }
 
   String out;
   serializeJson(doc, out);
-  return out;
+  server.send(200, "application/json", out);
 }
 
+// stream binary dump data to web-client
 void handleDump() {
-  String dump = server.pathArg(0);
-  if (dump == "list") {
-    server.send(200, "application/json", printerLog_getList());
-    return;
+  String path = "/d/" + server.pathArg(0);
+
+  if(LittleFS.exists(path)) {
+    File file = LittleFS.open(path, "r");
+    size_t sent = server.streamFile(file, "text/plain");
+    file.close();
   }
 
-  printerLog_getDump(dump);
+  server.send(404, "text/plain", "REKT");
 }
 
 bool handleFileRead(String path) {
@@ -101,10 +102,13 @@ String getContentType(String filename) {
 }
 
 void webserver_setup() {
-  server.on(UriBraces("/dump/{}"), handleDump);
+  server.on("/dumps/clear", clearDumps);
+  server.on("/dumps/list", getDumpsList);
+  server.on(UriBraces("/dumps/{}"), handleDump);
   server.onNotFound([]() {
-    if (!handleFileRead(server.uri()))
+    if (!handleFileRead(server.uri())) {
       server.send(404, "text/plain", "REKT");
+    }
   });
   server.begin();
   Serial.println(F("Server started"));
