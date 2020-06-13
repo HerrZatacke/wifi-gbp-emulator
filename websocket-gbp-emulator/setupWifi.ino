@@ -1,9 +1,8 @@
 
 void setupWifi() {
   StaticJsonDocument<256> conf;
-  LittleFS.begin();
 
-  File confFile = LittleFS.open( "/conf.json", "r");
+  File confFile = LittleFS.open("/conf.json", "r");
   while (!confFile) {
     Serial.println("opening conf.json failed");
     delay(1250);
@@ -23,12 +22,13 @@ void setupWifi() {
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
 
+  bool connectionBlink = false;
   while (WiFi.status() != WL_CONNECTED) {
-    delay(250);
+    delay(200);
+    digitalWrite(LED_BLINK_PIN, connectionBlink);
+    connectionBlink = !connectionBlink;
     Serial.print(F("."));
   }
 
-  Serial.println(F("WiFi connected"));
-  Serial.print(F("http://"));
-  Serial.println(WiFi.localIP());
+  Serial.println(F("\nWiFi connected"));
 }

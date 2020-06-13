@@ -2,10 +2,6 @@ bool cycle = false;
 unsigned long blink_nextMillis = 0;
 
 void wifi_blink_setup() {
-  #ifdef LED_BLINK_PIN
-  pinMode(LED_BLINK_PIN, OUTPUT);
-  #endif
-
   blink_nextMillis = millis() + WIFI_BLINK_DELAY;
 }
 

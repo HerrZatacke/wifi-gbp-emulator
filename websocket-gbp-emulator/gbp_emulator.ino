@@ -368,7 +368,7 @@ static bool gbp_parse_message_update
         {
           if (packet_ptr->data_ptr == NULL)
           { // SIMPLE ASSERT
-            webSocket.broadcastTXT("# ERROR: Serial data length should be non zero");
+            // webSocket.broadcastTXT("# ERROR: Serial data length should be non zero");
             while(1);
           }
           ptr->parse_state = GBP_PARSE_STATE_VARIABLE_PAYLOAD;
@@ -650,7 +650,7 @@ void gbp_emulator_loop() {
         sprintf(messagePacket, "!{\"command\":\"UKNO\"}");
     }
 
-    webSocket.broadcastTXT(messagePacket);
+    // webSocket.broadcastTXT(messagePacket);
 
     // Indicate To The Byte Scanner and the Message Parser to scan for new packet
     gbp_rx_tx_byte_reset(&(gbp_printer.gbp_rx_tx_byte_buffer));
@@ -687,7 +687,7 @@ void gbp_emulator_loop() {
           // Insert Newline Periodically
           if ((i+1)%16 == 0)
           {
-            webSocket.broadcastTXT(imageData);
+            // webSocket.broadcastTXT(imageData);
             // printerLog_add(imageData);
             imageData = "";
           }
@@ -711,9 +711,9 @@ void gbp_emulator_loop() {
         // I like the print screen in the gameboy, so I would just let this play for a few seconds.
         if ( (0 != gbp_printer.uptime_til_pretend_print_finish_ms) && (millis() > gbp_printer.uptime_til_pretend_print_finish_ms) )
         { // reset printer byte and packet processor
-          webSocket.broadcastTXT("# Finished Pretending To Print for fun!");
-          webSocket.broadcastTXT("# GAMEBOY PRINTER EMULATION PROJECT");
-          webSocket.broadcastTXT("# By Brian Khuu (2017)");
+          // webSocket.broadcastTXT("# Finished Pretending To Print for fun!");
+          // webSocket.broadcastTXT("# GAMEBOY PRINTER EMULATION PROJECT");
+          // webSocket.broadcastTXT("# By Brian Khuu (2017)");
 
           // printerLog_finalize();
 
@@ -733,7 +733,7 @@ void gbp_emulator_loop() {
   {
     if ( (0 != gbp_printer.uptime_til_timeout_ms) && (millis() > gbp_printer.uptime_til_timeout_ms) )
     { // reset printer byte and packet processor
-      webSocket.broadcastTXT("# ERROR: Timed Out");
+      // webSocket.broadcastTXT("# ERROR: Timed Out");
       gbp_rx_tx_byte_reset(&(gbp_printer.gbp_rx_tx_byte_buffer));
       gbp_parse_message_reset(&(gbp_printer.gbp_packet_parser));
     }
