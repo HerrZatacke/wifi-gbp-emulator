@@ -93,13 +93,12 @@ void processData(uint8_t data) {
 String nextFreeFilename() {
   for(int i = 1; i < 200; i++) {
     char path[31];
-    sprintf(path, "/d/%d" + dumpFileExtension, i);
-    if(!LittleFS.exists(path)) {
-      return path;
+    sprintf(path, "/d/%05d", i);
+    if(!LittleFS.exists(path + dumpFileExtension)) {
+      return path + dumpFileExtension;
     }
   }
 }
-
 
 void storeData(uint8_t *image_data) {
   detachInterrupt(SCLK);
