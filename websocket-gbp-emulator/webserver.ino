@@ -7,8 +7,14 @@ bool handleFileRead(String path) {
     path += "index.html";
   }
 
-  if (LittleFS.exists(path)) {
+  String pathWithGz = path + ".gz";
+  if(LittleFS.exists(pathWithGz) || LittleFS.exists(path)) {
     String contentType = getContentType(path);
+
+    if(LittleFS.exists(pathWithGz)) {
+      path += ".gz";
+    }
+
     File file = LittleFS.open(path, "r");
     size_t sent = server.streamFile(file, contentType);
     file.close();
