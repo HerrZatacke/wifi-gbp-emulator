@@ -1,3 +1,8 @@
+#include <FS.h>
+#include <LittleFS.h>
+#include <ArduinoJson.h>
+#include <ESP8266WiFi.h>
+#include <ESP8266WebServer.h>
 
 #define LED_BLINK_PIN 2
 #define WIFI_BLINK_DELAY 2000
@@ -6,11 +11,7 @@
 #define MODE_PRINT true
 #define MODE_SERVE false
 
-#include <FS.h>
-#include <LittleFS.h>
-#include <ArduinoJson.h>
-#include <ESP8266WiFi.h>
-#include <ESP8266WebServer.h>
+String dumpFileExtension = ".bin";
 
 ESP8266WebServer server(80);
 

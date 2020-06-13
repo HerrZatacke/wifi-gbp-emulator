@@ -93,7 +93,7 @@ void processData(uint8_t data) {
 String nextFreeFilename() {
   for(int i = 1; i < 200; i++) {
     char path[31];
-    sprintf(path, "/d/%d.bin", i);
+    sprintf(path, "/d/%d" + dumpFileExtension, i);
     if(!LittleFS.exists(path)) {
       return path;
     }

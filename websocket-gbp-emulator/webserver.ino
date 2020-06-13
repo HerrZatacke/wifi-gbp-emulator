@@ -2,7 +2,7 @@
 
 // stream binary dump data to web-client
 void printerLog_getDump(String dump) {
-  String path = "/d/" + dump + ".txt";
+  String path = "/d/" + dump + dumpFileExtension;
   String content = "";
   if(LittleFS.exists(path)) {
     File file = LittleFS.open(path, "r");
