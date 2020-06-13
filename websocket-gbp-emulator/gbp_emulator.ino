@@ -633,10 +633,6 @@ void gbp_emulator_loop() {
             (gbp_printer.gbp_print_settings_buffer[GBP_PRINT_BYTE_INDEX_PALETTE_VALUE  ]   )        ,
             (gbp_printer.gbp_print_settings_buffer[GBP_PRINT_BYTE_INDEX_PRINT_DENSITY  ]   )
           );
-
-          if (((gbp_printer.gbp_print_settings_buffer[GBP_PRINT_BYTE_INDEX_NUM_OF_LINEFEED]) & 0x0F) != 0) {
-            printerLog_finalize();
-          }
         break;
       case GBP_COMMAND_INQUIRY:
         sprintf(messagePacket, "!{\"command\":\"INQY\",\"status\":{\"lowbatt\":%d,\"jam\":%d,\"err\":%d,\"pkterr\":%d,\"unproc\":%d,\"full\":%d,\"bsy\":%d,\"chk_err\":%d}}",
@@ -692,7 +688,7 @@ void gbp_emulator_loop() {
           if ((i+1)%16 == 0)
           {
             webSocket.broadcastTXT(imageData);
-            printerLog_add(imageData);
+            // printerLog_add(imageData);
             imageData = "";
           }
           else
@@ -718,6 +714,8 @@ void gbp_emulator_loop() {
           webSocket.broadcastTXT("# Finished Pretending To Print for fun!");
           webSocket.broadcastTXT("# GAMEBOY PRINTER EMULATION PROJECT");
           webSocket.broadcastTXT("# By Brian Khuu (2017)");
+
+          // printerLog_finalize();
 
           gbp_printer.uptime_til_pretend_print_finish_ms = 0;
           gbp_printer.gbp_printer_status.printer_busy = false;
