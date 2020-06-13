@@ -33,7 +33,7 @@ void printerLog_finalize() {
 
   // String fName = "/d/" + millis() + ".txt";
   String fName = "/w/dump.txt";
-  File dumpFile = SPIFFS.open(fName, "w");;
+  File dumpFile = LittleFS.open(fName, "w");;
   if(!dumpFile){
     Serial.println("Error opening " + fName);
     return;

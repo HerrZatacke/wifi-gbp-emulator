@@ -1,9 +1,9 @@
 
 void setupWifi() {
   StaticJsonDocument<256> conf;
-  SPIFFS.begin();
+  LittleFS.begin();
 
-  File confFile = SPIFFS.open( "/conf.json", "r");
+  File confFile = LittleFS.open( "/conf.json", "r");
   while (!confFile) {
     Serial.println("opening conf.json failed");
     delay(1250);

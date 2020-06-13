@@ -7,9 +7,9 @@ bool handleFileRead(String path) {
     path += "index.html";
   }
 
-  if (SPIFFS.exists(path)) {
+  if (LittleFS.exists(path)) {
     String contentType = getContentType(path);
-    File file = SPIFFS.open(path, "r");
+    File file = LittleFS.open(path, "r");
     size_t sent = server.streamFile(file, contentType);
     file.close();
     return true;
