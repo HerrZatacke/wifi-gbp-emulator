@@ -10,6 +10,7 @@
 #include <WebSocketsServer.h>
 
 WebSocketsServer webSocket(81);
+ESP8266WebServer server(80);
 
 void setup() {
   Serial.begin(115200);

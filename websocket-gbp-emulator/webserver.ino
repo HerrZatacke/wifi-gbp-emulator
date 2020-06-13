@@ -1,4 +1,14 @@
-ESP8266WebServer server(80);
+#include <uri/UriBraces.h>
+
+void handleDump() {
+  String dump = server.pathArg(0);
+  if (dump == "list") {
+    server.send(200, "application/json", printerLog_getList());
+    return;
+  }
+
+  printerLog_getDump(dump);
+}
 
 bool handleFileRead(String path) {
   path = "/w" + path;
@@ -35,6 +45,7 @@ String getContentType(String filename) {
 }
 
 void webserver_setup() {
+  server.on(UriBraces("/dump/{}"), handleDump);
   server.onNotFound([]() {
     if (!handleFileRead(server.uri()))
       server.send(404, "text/plain", "REKT");
