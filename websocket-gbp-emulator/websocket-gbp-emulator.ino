@@ -11,7 +11,7 @@
 #define MODE_PRINT true
 #define MODE_SERVE false
 
-#define ALTERNATE_BOOT_MODE
+// #define ALTERNATE_BOOT_MODE
 
 String dumpFileExtension = ".bin";
 
