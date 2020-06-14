@@ -11,30 +11,42 @@
 #define MODE_PRINT true
 #define MODE_SERVE false
 
+// #define ALTERNATE_BOOT_MODE
+
 String dumpFileExtension = ".bin";
 
 ESP8266WebServer server(80);
 
-bool mode;
+bool bootMode;
 
 void setup() {
-  mode = digitalRead(GB_5V_OUT);
+  fs_setup();
+
+
   Serial.begin(115200);
   pinMode(GB_5V_OUT, INPUT);
   pinMode(LED_BLINK_PIN, OUTPUT);
 
-  Serial.println("\n\n-----------------------");
-  if (mode == MODE_PRINT) {
+
+  #ifdef ALTERNATE_BOOT_MODE
+  bootMode fs_alternateBootMode();
+  #else
+  bootMode = digitalRead(GB_5V_OUT);
+  #endif
+
+  if (bootMode == MODE_PRINT) {
+    Serial.println("\n\n-----------------------");
     Serial.println("Booting in printer mode");
     Serial.println("-----------------------\n");
     digitalWrite(LED_BLINK_PIN, false);
-    fs_setup();
+    fs_info();
     espprinter_setup();
   } else {
+    Serial.println("\n\n-----------------------");
     Serial.println("Booting in server mode");
     Serial.println("-----------------------\n");
     digitalWrite(LED_BLINK_PIN, true);
-    fs_setup();
+    fs_info();
     setupWifi();
     mdns_setup();
     webserver_setup();
@@ -43,13 +55,15 @@ void setup() {
 }
 
 void loop() {
-  if (mode == MODE_SERVE) {
+  if (bootMode == MODE_SERVE) {
     wifi_blink_loop();
     webserver_loop();
     mdns_loop();
   }
 
-  if (mode != digitalRead(GB_5V_OUT)) {
+  #ifndef ALTERNATE_BOOT_MODE
+  if (bootMode != digitalRead(GB_5V_OUT)) {
    ESP.restart();
   }
+  #endif
 }
