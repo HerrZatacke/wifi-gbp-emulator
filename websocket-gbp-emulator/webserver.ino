@@ -62,6 +62,7 @@ void handleDump() {
 
   if(LittleFS.exists(path)) {
     File file = LittleFS.open(path, "r");
+    server.sendHeader("Access-Control-Allow-Origin", "*");
     size_t sent = server.streamFile(file, "text/plain");
     file.close();
   }
