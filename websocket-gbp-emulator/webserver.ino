@@ -46,7 +46,7 @@ void getDumpsList() {
   fs["dumpcount"] = dumpcount;
 
   while(dumpDir.next()) {
-    dumps.add(dumpDir.fileName());
+    dumps.add("/dumps/" + dumpDir.fileName());
   }
 
   String out;
