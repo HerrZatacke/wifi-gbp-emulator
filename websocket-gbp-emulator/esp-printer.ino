@@ -114,6 +114,7 @@ void storeData(uint8_t *image_data) {
     Serial.println("file creation failed");
   }
 
+  file.write("GB-BIN01", 8);
   file.write(image_data, img_index);
   file.close();
 
