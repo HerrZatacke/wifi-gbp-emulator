@@ -12,6 +12,7 @@ void clearDumps() {
 
   char out[24];
   sprintf(out, "{\"deleted\":%d}", dumpcount);
+  server.sendHeader("Access-Control-Allow-Origin", "*");
   server.send(200, "application/json", out);
 }
 
@@ -51,6 +52,7 @@ void getDumpsList() {
 
   String out;
   serializeJson(doc, out);
+  server.sendHeader("Access-Control-Allow-Origin", "*");
   server.send(200, "application/json", out);
 }
 
@@ -64,6 +66,7 @@ void handleDump() {
     file.close();
   }
 
+  server.sendHeader("Access-Control-Allow-Origin", "*");
   server.send(404, "text/plain", "REKT");
 }
 
@@ -83,6 +86,7 @@ bool handleFileRead(String path) {
     }
 
     File file = LittleFS.open(path, "r");
+    server.sendHeader("Access-Control-Allow-Origin", "*");
     size_t sent = server.streamFile(file, contentType);
     file.close();
     return true;
@@ -107,6 +111,7 @@ void webserver_setup() {
   server.on(UriBraces("/dumps/{}"), handleDump);
   server.onNotFound([]() {
     if (!handleFileRead(server.uri())) {
+      server.sendHeader("Access-Control-Allow-Origin", "*");
       server.send(404, "text/plain", "REKT");
     }
   });
