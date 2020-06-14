@@ -11,7 +11,7 @@
 #define MODE_PRINT true
 #define MODE_SERVE false
 
-// #define ALTERNATE_BOOT_MODE
+#define ALTERNATE_BOOT_MODE
 
 String dumpFileExtension = ".bin";
 
@@ -26,9 +26,8 @@ void setup() {
   pinMode(GB_5V_OUT, INPUT);
   pinMode(LED_BLINK_PIN, OUTPUT);
 
-
   #ifdef ALTERNATE_BOOT_MODE
-  bootMode fs_alternateBootMode();
+  bootMode = fs_alternateBootMode();
   #else
   bootMode = digitalRead(GB_5V_OUT);
   #endif
