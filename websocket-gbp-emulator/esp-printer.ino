@@ -16,6 +16,9 @@ uint8_t inquiry_count = 0x00;
 uint8_t image_data[11520] = {};
 uint32_t img_index = 0;
 
+unsigned long blinkUpdate = 0;
+bool blinkCycle = false;
+
 void ICACHE_RAM_ATTR gbClockHit() {
   if (digitalRead(MOSI) == HIGH) {
     current_data |= 0x01;
@@ -43,6 +46,17 @@ void ICACHE_RAM_ATTR gbClockHit() {
     clock_count++;
   }
 
+  // Blink while receiving data
+  unsigned long now = millis();
+  if (blinkUpdate < now) {
+    blinkUpdate = now + 50;
+    if (blinkCycle == false) {
+      blinkCycle = true;
+    } else {
+      blinkCycle = false;
+    }
+    digitalWrite(LED_BLINK_PIN, blinkCycle);
+  }
 }
 
 void processData(uint8_t data) {
@@ -91,7 +105,7 @@ void processData(uint8_t data) {
 }
 
 String nextFreeFilename() {
-  for(int i = 1; i < 200; i++) {
+  for(int i = 1; i < 250; i++) {
     char path[31];
     sprintf(path, "/d/%05d", i);
     if(!LittleFS.exists(path + dumpFileExtension)) {
@@ -128,6 +142,7 @@ void storeData(uint8_t *image_data) {
   inquiry_count = 0x00;
   img_index = 0x00;
 
+  digitalWrite(LED_BLINK_PIN, false);
   attachInterrupt(SCLK, gbClockHit, RISING);
 }
 
@@ -140,6 +155,8 @@ void espprinter_setup() {
 
   // Setup Clock Interrupt
   attachInterrupt(SCLK, gbClockHit, RISING);
+  
+  blinkUpdate = millis();
 
   Serial.println("Printer ready.");
 }
