@@ -22,7 +22,6 @@ bool bootMode;
 void setup() {
   fs_setup();
 
-
   Serial.begin(115200);
   pinMode(GB_5V_OUT, INPUT);
   pinMode(LED_BLINK_PIN, OUTPUT);

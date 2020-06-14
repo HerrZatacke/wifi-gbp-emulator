@@ -9,7 +9,7 @@ The code is designed to check pin `D0` for high to boot in printer mode.
 Through this it is possible to use the +5v provided by the GameBoy to switch the mode.  
 
 If you dont want to solder, you can uncomment `#define ALTERNATE_BOOT_MODE` in `websocket-gbp-emulator.ino`.  
-This will alternate the bootmode automatically between printer and server on each boot, so you can use the Reset-button to switch modes.  
+This will alternate the bootmode automatically between printer and server on each boot, so you can use the reset-button to switch modes.  
 
 ## Links / Research
 * Original GPB-Emulator by [mofosyne: Arduino Gameboy Printer Emulator](https://github.com/mofosyne/arduino-gameboy-printer-emulator)  
