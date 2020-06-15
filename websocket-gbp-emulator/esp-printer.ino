@@ -9,14 +9,15 @@ String nextFreeFilename();
 uint8_t clock_count = 0x00;
 uint8_t current_data = 0x00;
 uint32_t packet_count = 0x00;
-uint32_t packet_legth = 0x00;
+uint32_t packet_length = 0x00;
 uint8_t current_packet_type = 0x00;
 bool printed = false;
 uint8_t inquiry_count = 0x00;
 uint8_t image_data[11520] = {};
 uint32_t img_index = 0;
 
-unsigned long blinkUpdate = 0;
+unsigned long lastClockHit = 0;
+unsigned long blinkClockHit = 0;
 bool blinkCycle = false;
 
 void ICACHE_RAM_ATTR gbClockHit() {
@@ -24,12 +25,12 @@ void ICACHE_RAM_ATTR gbClockHit() {
     current_data |= 0x01;
   }
 
-  if (packet_count == (packet_legth - 3)) {
+  if (packet_count == (packet_length - 3)) {
     if (clock_count == 7) {
       digitalWrite(MISO, HIGH);
     }
   }
-  if (packet_count == (packet_legth - 2)) {
+  if (packet_count == (packet_length - 2)) {
     if (clock_count == 0 || clock_count == 7) {
       digitalWrite(MISO, LOW);
     } else if (clock_count == 6) {
@@ -47,14 +48,10 @@ void ICACHE_RAM_ATTR gbClockHit() {
   }
 
   // Blink while receiving data
-  unsigned long now = millis();
-  if (blinkUpdate < now) {
-    blinkUpdate = now + 50;
-    if (blinkCycle == false) {
-      blinkCycle = true;
-    } else {
-      blinkCycle = false;
-    }
+  lastClockHit = millis();
+  if (blinkClockHit < lastClockHit) {
+    blinkClockHit = lastClockHit + 50;
+    blinkCycle = !blinkCycle;
     digitalWrite(LED_BLINK_PIN, blinkCycle);
   }
 }
@@ -64,25 +61,25 @@ void processData(uint8_t data) {
     current_packet_type = data;
     switch (data) {
       case 0x04:
-      packet_legth = 0x28A; // 650 bytes
+      packet_length = 0x28A; // 650 bytes
       break;
 
       case 0x02:
-      packet_legth = 0x0E; // 14 bytes
+      packet_length = 0x0E; // 14 bytes
       break;
 
       default:
-      packet_legth = 0x0A; // 10 bytes
+      packet_length = 0x0A; // 10 bytes
       break;
     }
   }
 
   // Handles that special empty body data packet
   if ((current_packet_type == 0x04) && (packet_count == 4) && (data == 0x00)) {
-    packet_legth = 0x0A;
+    packet_length = 0x0A;
   }
 
-  if ((current_packet_type == 0x04) && (packet_count >= 6) && (packet_count <= packet_legth - 5)) {
+  if ((current_packet_type == 0x04) && (packet_count >= 6) && (packet_count <= packet_length - 5)) {
     image_data[img_index++] = data;
   }
 
@@ -94,7 +91,7 @@ void processData(uint8_t data) {
     inquiry_count++;
   }
 
-  if (packet_count == (packet_legth - 1)) {
+  if (packet_count == (packet_length - 1)) {
     packet_count = 0x00;
     if (inquiry_count == 4) {
       storeData(image_data);
@@ -112,6 +109,23 @@ String nextFreeFilename() {
       return path + dumpFileExtension;
     }
   }
+}
+
+void resetValues() {
+  clock_count = 0x00;
+  current_data = 0x00;
+  packet_count = 0x00;
+  packet_length = 0x00;
+  current_packet_type = 0x00;
+  printed = false;
+  inquiry_count = 0x00;
+  img_index = 0x00;
+
+  lastClockHit = 0;
+
+  // Turn LED ON
+  digitalWrite(LED_BLINK_PIN, false);
+  Serial.println("Printer ready.");
 }
 
 void storeData(uint8_t *image_data) {
@@ -132,20 +146,10 @@ void storeData(uint8_t *image_data) {
   file.write(image_data, img_index);
   file.close();
 
-  // Serial.println("Image saved! Attaching Interrupt...");
-  clock_count = 0x00;
-  current_data = 0x00;
-  packet_count = 0x00;
-  packet_legth = 0x00;
-  current_packet_type = 0x00;
-  printed = false;
-  inquiry_count = 0x00;
-  img_index = 0x00;
+  resetValues();
 
-  digitalWrite(LED_BLINK_PIN, false);
   attachInterrupt(SCLK, gbClockHit, RISING);
 }
-
 
 void espprinter_setup() {
   // Setup ports
@@ -153,10 +157,15 @@ void espprinter_setup() {
   pinMode(MOSI, INPUT);
   pinMode(SCLK, INPUT);
 
+  lastClockHit = millis();
+  resetValues();
+
   // Setup Clock Interrupt
   attachInterrupt(SCLK, gbClockHit, RISING);
-  
-  blinkUpdate = millis();
+}
 
-  Serial.println("Printer ready.");
+void espprinter_loop() {
+  if (lastClockHit != 0 && lastClockHit + 500 < millis()) {
+    resetValues();
+  }
 }

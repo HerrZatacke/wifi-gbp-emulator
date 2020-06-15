@@ -11,7 +11,7 @@
 #define MODE_PRINT true
 #define MODE_SERVE false
 
-// #define ALTERNATE_BOOT_MODE
+#define ALTERNATE_BOOT_MODE
 
 String dumpFileExtension = ".bin";
 
@@ -57,6 +57,8 @@ void loop() {
     wifi_blink_loop();
     webserver_loop();
     mdns_loop();
+  } else {
+    espprinter_loop();
   }
 
   #ifndef ALTERNATE_BOOT_MODE
