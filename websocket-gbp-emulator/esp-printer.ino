@@ -4,7 +4,7 @@
 
 void processData(uint8_t data);
 void storeData(uint8_t *image_data);
-String nextFreeFilename();
+unsigned int nextFreeFileIndex();
 
 uint8_t clock_count = 0x00;
 uint8_t current_data = 0x00;
@@ -19,6 +19,8 @@ uint32_t img_index = 0;
 unsigned long lastClockHit = 0;
 unsigned long blinkClockHit = 0;
 bool blinkCycle = false;
+
+unsigned int freeFileIndex = 0;
 
 void ICACHE_RAM_ATTR gbClockHit() {
   if (digitalRead(MOSI) == HIGH) {
@@ -101,12 +103,12 @@ void processData(uint8_t data) {
   }
 }
 
-String nextFreeFilename() {
-  for(int i = 1; i < 250; i++) {
+unsigned int nextFreeFileIndex() {
+  for (int i = 1; i < 250; i++) {
     char path[31];
-    sprintf(path, "/d/%05d", i);
-    if(!LittleFS.exists(path + dumpFileExtension)) {
-      return path + dumpFileExtension;
+    sprintf(path, "/d/%05d.bin", i);
+    if (!LittleFS.exists(path)) {
+      return i + 1;
     }
   }
 }
@@ -131,10 +133,9 @@ void resetValues() {
 void storeData(uint8_t *image_data) {
   detachInterrupt(SCLK);
 
-  String fileName = nextFreeFilename();
-
-  Serial.print("Storing received image to ");
-  Serial.println(fileName);
+  unsigned long perf = millis();
+  char fileName[31];
+  sprintf(fileName, "/d/%05d.bin", freeFileIndex);
 
   File file = LittleFS.open(fileName, "w");
 
@@ -146,6 +147,10 @@ void storeData(uint8_t *image_data) {
   file.write(image_data, img_index);
   file.close();
 
+  perf = millis() - perf;
+  Serial.printf("File /d/%05d.bin written in %lums\n", freeFileIndex, perf);
+
+  freeFileIndex++;
   resetValues();
 
   attachInterrupt(SCLK, gbClockHit, RISING);
@@ -156,6 +161,9 @@ void espprinter_setup() {
   pinMode(MISO, OUTPUT);
   pinMode(MOSI, INPUT);
   pinMode(SCLK, INPUT);
+
+  freeFileIndex = nextFreeFileIndex();
+  Serial.printf("Next file: /d/%05d.bin\n", freeFileIndex);
 
   lastClockHit = millis();
   resetValues();

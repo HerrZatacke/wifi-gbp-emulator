@@ -13,8 +13,6 @@
 
 #define ALTERNATE_BOOT_MODE
 
-String dumpFileExtension = ".bin";
-
 ESP8266WebServer server(80);
 
 bool bootMode;
@@ -23,6 +21,9 @@ void setup() {
   fs_setup();
 
   Serial.begin(115200);
+  WiFi.disconnect();
+  delay(1000);
+
   pinMode(GB_5V_OUT, INPUT);
   pinMode(LED_BLINK_PIN, OUTPUT);
 
