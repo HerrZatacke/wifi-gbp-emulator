@@ -2,21 +2,21 @@
 #define MOSI 13
 #define SCLK 14
 
-void processData(uint8_t data);
-void storeData(uint8_t *image_data);
+void processByte(byte data);
+void storeData(byte *image_data);
 unsigned int nextFreeFileIndex();
 
-uint8_t clock_count = 0x00;
-uint8_t current_data = 0x00;
+byte clock_count = 0x00;
+byte current_byte = 0x00;
 uint32_t packet_count = 0x00;
 uint32_t packet_length = 0x00;
-uint8_t current_packet_type = 0x00;
+byte current_packet_type = 0x00;
 bool printed = false;
-uint8_t inquiry_count = 0x00;
-uint8_t image_data[11520] = {};
+byte inquiry_count = 0x00;
+byte image_data[11520] = {};
 uint32_t img_index = 0;
 
-unsigned long lastClockHit = 0;
+unsigned long lastByteReceived = 0;
 unsigned long blinkClockHit = 0;
 bool blinkCycle = false;
 
@@ -24,7 +24,7 @@ unsigned int freeFileIndex = 0;
 
 void ICACHE_RAM_ATTR gbClockHit() {
   if (digitalRead(MOSI) == HIGH) {
-    current_data |= 0x01;
+    current_byte |= 0x01;
   }
 
   if (packet_count == (packet_length - 3)) {
@@ -41,24 +41,16 @@ void ICACHE_RAM_ATTR gbClockHit() {
   }
 
   if (clock_count == 7) {
-    processData(current_data);
+    processByte(current_byte);
     clock_count = 0;
-    current_data = 0x00;
+    current_byte = 0x00;
   } else {
-    current_data = current_data << 1;
+    current_byte = current_byte << 1;
     clock_count++;
-  }
-
-  // Blink while receiving data
-  lastClockHit = millis();
-  if (blinkClockHit < lastClockHit) {
-    blinkClockHit = lastClockHit + 50;
-    blinkCycle = !blinkCycle;
-    digitalWrite(LED_BLINK_PIN, blinkCycle);
   }
 }
 
-void processData(uint8_t data) {
+void processByte(byte data) {
   if (packet_count == 2) { //command type
     current_packet_type = data;
     switch (data) {
@@ -101,6 +93,14 @@ void processData(uint8_t data) {
   } else {
     packet_count++;
   }
+
+  // Blink while receiving data
+  lastByteReceived = millis();
+  if (blinkClockHit < lastByteReceived) {
+    blinkClockHit = lastByteReceived + 50;
+    blinkCycle = !blinkCycle;
+    digitalWrite(LED_BLINK_PIN, blinkCycle);
+  }
 }
 
 unsigned int nextFreeFileIndex() {
@@ -115,7 +115,7 @@ unsigned int nextFreeFileIndex() {
 
 void resetValues() {
   clock_count = 0x00;
-  current_data = 0x00;
+  current_byte = 0x00;
   packet_count = 0x00;
   packet_length = 0x00;
   current_packet_type = 0x00;
@@ -123,14 +123,14 @@ void resetValues() {
   inquiry_count = 0x00;
   img_index = 0x00;
 
-  lastClockHit = 0;
+  lastByteReceived = 0;
 
   // Turn LED ON
   digitalWrite(LED_BLINK_PIN, false);
   Serial.println("Printer ready.");
 }
 
-void storeData(uint8_t *image_data) {
+void storeData(byte *image_data) {
   detachInterrupt(SCLK);
 
   unsigned long perf = millis();
@@ -165,7 +165,7 @@ void espprinter_setup() {
   freeFileIndex = nextFreeFileIndex();
   Serial.printf("Next file: /d/%05d.bin\n", freeFileIndex);
 
-  lastClockHit = millis();
+  lastByteReceived = millis();
   resetValues();
 
   // Setup Clock Interrupt
@@ -173,7 +173,7 @@ void espprinter_setup() {
 }
 
 void espprinter_loop() {
-  if (lastClockHit != 0 && lastClockHit + 500 < millis()) {
+  if (lastByteReceived != 0 && lastByteReceived + 500 < millis()) {
     resetValues();
   }
 }
