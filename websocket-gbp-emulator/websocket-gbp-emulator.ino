@@ -18,9 +18,11 @@ ESP8266WebServer server(80);
 bool bootMode;
 
 void setup() {
+  Serial.begin(115200);
+  Serial.println("\n\n\n\n");
+
   fs_setup();
 
-  Serial.begin(115200);
   WiFi.disconnect();
   delay(1000);
 

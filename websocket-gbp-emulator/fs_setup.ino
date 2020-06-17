@@ -1,11 +1,20 @@
 void fs_setup() {
   LittleFS.begin();
+
+  // clean a little harder
+  Serial.println("Cleaning FS");
+  for (int i = 0; i < 100; i++) {
+    if (i % 10 == 0) {
+      Serial.print(".");
+    }
+    LittleFS.gc();
+  }
+  Serial.println(" done");
 }
 
 void fs_info() {
   FSInfo fs_info;
   LittleFS.info(fs_info);
-  LittleFS.gc();
   Serial.print("FILESYSTEM total: ");
   Serial.print(fs_info.totalBytes);
   Serial.print(" | used: ");
