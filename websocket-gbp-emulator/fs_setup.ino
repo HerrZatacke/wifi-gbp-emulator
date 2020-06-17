@@ -1,5 +1,6 @@
+
 void fs_setup() {
-  LittleFS.begin();
+  FS.begin();
 
   // clean a little harder
   Serial.println("Cleaning FS");
@@ -7,14 +8,14 @@ void fs_setup() {
     if (i % 10 == 0) {
       Serial.print(".");
     }
-    LittleFS.gc();
+    FS.gc();
   }
   Serial.println(" done");
 }
 
 void fs_info() {
   FSInfo fs_info;
-  LittleFS.info(fs_info);
+  FS.info(fs_info);
   Serial.print("FILESYSTEM total: ");
   Serial.print(fs_info.totalBytes);
   Serial.print(" | used: ");
@@ -24,11 +25,11 @@ void fs_info() {
 #ifdef ALTERNATE_BOOT_MODE
 bool fs_alternateBootMode() {
   String bootFile = "bootmode.txt";
-  if (LittleFS.exists(bootFile)) {
-    LittleFS.remove(bootFile);
+  if (FS.exists(bootFile)) {
+    FS.remove(bootFile);
     return false;
   } else {
-    File file = LittleFS.open(bootFile, "w");
+    File file = FS.open(bootFile, "w");
     file.write("BOOT", 4);
     file.close();
     return true;

@@ -107,7 +107,7 @@ unsigned int nextFreeFileIndex() {
   for (int i = 1; i < 250; i++) {
     char path[31];
     sprintf(path, "/d/%05d.bin", i);
-    if (!LittleFS.exists(path)) {
+    if (!FS.exists(path)) {
       return i;
     }
   }
@@ -137,7 +137,7 @@ void storeData(byte *image_data) {
   char fileName[31];
   sprintf(fileName, "/d/%05d.bin", freeFileIndex);
 
-  File file = LittleFS.open(fileName, "w");
+  File file = FS.open(fileName, "w");
 
   if (!file) {
     Serial.println("file creation failed");

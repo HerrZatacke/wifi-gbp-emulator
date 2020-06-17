@@ -1,8 +1,22 @@
 #include <FS.h>
-#include <LittleFS.h>
 #include <ArduinoJson.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
+
+// LittleFS _seems_ 100% slower than SPIFFS in this use-case
+// enable only if you think you know what you are doing
+// #define FSTYPE_LITTLEFS
+
+// Alternate boot mode lets you toggle the mode by using the reset switch
+// If commented out, the signal on D0 is being used to determine mode
+#define ALTERNATE_BOOT_MODE
+
+#ifdef FSTYPE_LITTLEFS
+#include <LittleFS.h>
+#define FS LittleFS
+#else
+#define FS SPIFFS
+#endif
 
 #define LED_BLINK_PIN 2
 #define WIFI_BLINK_DELAY 2000
@@ -10,8 +24,6 @@
 
 #define MODE_PRINT true
 #define MODE_SERVE false
-
-#define ALTERNATE_BOOT_MODE
 
 ESP8266WebServer server(80);
 

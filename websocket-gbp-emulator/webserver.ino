@@ -2,11 +2,17 @@
 
 // delete all stored dumps
 void clearDumps() {
-  Dir dumpDir = LittleFS.openDir("/d/");
+  Dir dumpDir = FS.openDir("/d/");
 
   unsigned int dumpcount = 0;
   while(dumpDir.next()) {
-    LittleFS.remove("/d/" + dumpDir.fileName());
+
+    #ifdef FSTYPE_LITTLEFS
+      FS.remove("/d/" + dumpDir.fileName());
+    #else
+      FS.remove(dumpDir.fileName());
+    #endif
+
     dumpcount++;
   }
 
@@ -18,10 +24,10 @@ void clearDumps() {
 
 // serve list of saved dumps
 void getDumpsList() {
-  Dir dumpDir = LittleFS.openDir("/d/");
+  Dir dumpDir = FS.openDir("/d/");
 
   FSInfo fs_info;
-  LittleFS.info(fs_info);
+  FS.info(fs_info);
   unsigned long total = fs_info.totalBytes;
   unsigned long used = fs_info.usedBytes;
   unsigned long avail = total - used;
@@ -47,7 +53,11 @@ void getDumpsList() {
   fs["dumpcount"] = dumpcount;
 
   while(dumpDir.next()) {
-    dumps.add("/dumps/" + dumpDir.fileName());
+    #ifdef FSTYPE_LITTLEFS
+      dumps.add("/dumps/" + dumpDir.fileName());
+    #else
+      dumps.add("/dumps" + dumpDir.fileName());
+    #endif
   }
 
   String out;
@@ -60,8 +70,8 @@ void getDumpsList() {
 void handleDump() {
   String path = "/d/" + server.pathArg(0);
 
-  if(LittleFS.exists(path)) {
-    File file = LittleFS.open(path, "r");
+  if(FS.exists(path)) {
+    File file = FS.open(path, "r");
     server.sendHeader("Access-Control-Allow-Origin", "*");
     size_t sent = server.streamFile(file, "text/plain");
     file.close();
@@ -79,14 +89,14 @@ bool handleFileRead(String path) {
   }
 
   String pathWithGz = path + ".gz";
-  if(LittleFS.exists(pathWithGz) || LittleFS.exists(path)) {
+  if(FS.exists(pathWithGz) || FS.exists(path)) {
     String contentType = getContentType(path);
 
-    if(LittleFS.exists(pathWithGz)) {
+    if(FS.exists(pathWithGz)) {
       path += ".gz";
     }
 
-    File file = LittleFS.open(path, "r");
+    File file = FS.open(path, "r");
     server.sendHeader("Access-Control-Allow-Origin", "*");
     size_t sent = server.streamFile(file, contentType);
     file.close();
@@ -109,7 +119,13 @@ String getContentType(String filename) {
 void webserver_setup() {
   server.on("/dumps/clear", clearDumps);
   server.on("/dumps/list", getDumpsList);
-  server.on(UriBraces("/dumps/{}"), handleDump);
+
+  #ifdef FSTYPE_LITTLEFS
+    server.on(UriBraces("/dumps/{}"), handleDump);
+  #else
+    server.on(UriBraces("/dumps/d/{}"), handleDump);
+  #endif
+
   server.onNotFound([]() {
     if (!handleFileRead(server.uri())) {
       server.sendHeader("Access-Control-Allow-Origin", "*");
