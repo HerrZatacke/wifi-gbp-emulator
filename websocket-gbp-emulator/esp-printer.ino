@@ -108,7 +108,7 @@ unsigned int nextFreeFileIndex() {
     char path[31];
     sprintf(path, "/d/%05d.bin", i);
     if (!LittleFS.exists(path)) {
-      return i + 1;
+      return i;
     }
   }
 }
@@ -151,9 +151,25 @@ void storeData(byte *image_data) {
   Serial.printf("File /d/%05d.bin written in %lums\n", freeFileIndex, perf);
 
   freeFileIndex++;
-  resetValues();
 
-  attachInterrupt(SCLK, gbClockHit, RISING);
+  if (freeFileIndex <= 210) {
+    resetValues();
+    attachInterrupt(SCLK, gbClockHit, RISING);
+  } else {
+    Serial.println("no more space on printer\nrebooting...");
+    ESP.restart();
+  }
+}
+
+// Blink if printer is full.
+void full() {
+  Serial.println("no more space on printer");
+  while(true) {
+    digitalWrite(LED_BLINK_PIN, LOW);
+    delay(1000);
+    digitalWrite(LED_BLINK_PIN, HIGH);
+    delay(500);
+  }
 }
 
 void espprinter_setup() {
@@ -163,7 +179,12 @@ void espprinter_setup() {
   pinMode(SCLK, INPUT);
 
   freeFileIndex = nextFreeFileIndex();
-  Serial.printf("Next file: /d/%05d.bin\n", freeFileIndex);
+
+  if (freeFileIndex <= 210) {
+    Serial.printf("Next file: /d/%05d.bin\n", freeFileIndex);
+  } else {
+    full();
+  }
 
   lastByteReceived = millis();
   resetValues();
