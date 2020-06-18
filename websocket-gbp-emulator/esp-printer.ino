@@ -40,6 +40,16 @@ void ICACHE_RAM_ATTR gbClockHit() {
     }
   }
 
+  if (clock_count == 0) {
+    // Blink while receiving data
+    lastByteReceived = millis();
+    if (blinkClockHit < lastByteReceived) {
+      blinkClockHit = lastByteReceived + 50;
+      blinkCycle = !blinkCycle;
+      digitalWrite(LED_BLINK_PIN, blinkCycle);
+    }
+  }
+
   if (clock_count == 7) {
     processByte(current_byte);
     clock_count = 0;
@@ -92,14 +102,6 @@ void processByte(byte data) {
     }
   } else {
     packet_count++;
-  }
-
-  // Blink while receiving data
-  lastByteReceived = millis();
-  if (blinkClockHit < lastByteReceived) {
-    blinkClockHit = lastByteReceived + 50;
-    blinkCycle = !blinkCycle;
-    digitalWrite(LED_BLINK_PIN, blinkCycle);
   }
 }
 
