@@ -111,6 +111,7 @@ unsigned int nextFreeFileIndex() {
       return i;
     }
   }
+  return MAX_DUMPS + 1;
 }
 
 void resetValues() {
