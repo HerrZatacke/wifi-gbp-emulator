@@ -13,7 +13,7 @@
 
 // Number of dumps after which the printer reports to be full.
 // due to performance reasons, there should always remain some free space on the Filesystem
-#define MAX_DUMPS 180
+#define MAX_IMAGES 180
 
 #ifdef FSTYPE_LITTLEFS
 #include <LittleFS.h>

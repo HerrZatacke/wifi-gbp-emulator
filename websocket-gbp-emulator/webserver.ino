@@ -50,7 +50,7 @@ void getDumpsList() {
   fs["total"] = total;
   fs["used"] = used;
   fs["available"] = avail;
-  fs["maxdumps"] = MAX_DUMPS;
+  fs["maximages"] = MAX_IMAGES;
   fs["dumpcount"] = dumpcount;
 
   while(dumpDir.next()) {
