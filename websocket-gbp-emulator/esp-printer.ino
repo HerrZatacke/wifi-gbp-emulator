@@ -104,7 +104,7 @@ void processByte(byte data) {
 }
 
 unsigned int nextFreeFileIndex() {
-  for (int i = 1; i < 250; i++) {
+  for (int i = 1; i < MAX_DUMPS; i++) {
     char path[31];
     sprintf(path, "/d/%05d.bin", i);
     if (!FS.exists(path)) {
@@ -152,7 +152,7 @@ void storeData(byte *image_data) {
 
   freeFileIndex++;
 
-  if (freeFileIndex <= 210) {
+  if (freeFileIndex <= MAX_DUMPS) {
     resetValues();
     attachInterrupt(SCLK, gbClockHit, RISING);
   } else {
@@ -180,7 +180,7 @@ void espprinter_setup() {
 
   freeFileIndex = nextFreeFileIndex();
 
-  if (freeFileIndex <= 210) {
+  if (freeFileIndex <= MAX_DUMPS) {
     Serial.printf("Next file: /d/%05d.bin\n", freeFileIndex);
   } else {
     full();
