@@ -19,6 +19,10 @@ void setupWifi() {
   Serial.print(F("Connecting to "));
   Serial.println(ssid);
 
+  #ifdef USE_OLED
+  oled_msg("Connecting to\n" + String(ssid), SPACE_TWO_LINES);
+  #endif
+
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
 

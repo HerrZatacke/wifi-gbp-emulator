@@ -15,6 +15,12 @@
 // due to performance reasons, there should always remain some free space on the Filesystem
 #define MAX_IMAGES 150
 
+// uncomment if using an adafruit oled display
+// check oled.ino to define pins
+// #define USE_OLED
+// #define SPACE_ONE_LINE 16
+// #define SPACE_TWO_LINES 12
+
 #ifdef FSTYPE_LITTLEFS
 #include <LittleFS.h>
 #define FS LittleFS
@@ -37,6 +43,10 @@ void setup() {
   Serial.begin(115200);
   Serial.println("\n\n\n\n");
 
+  #ifdef USE_OLED
+  oled_setup();
+  #endif
+
   fs_setup();
 
   WiFi.disconnect();
@@ -58,6 +68,11 @@ void setup() {
     digitalWrite(LED_BLINK_PIN, false);
     fs_info();
     espprinter_setup();
+
+    #ifdef USE_OLED
+    oled_msg("Printer mode", SPACE_ONE_LINE);
+    oled_drawLogo();
+    #endif
   } else {
     Serial.println("\n\n-----------------------");
     Serial.println("Booting in server mode");

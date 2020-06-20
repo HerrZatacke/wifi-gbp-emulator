@@ -7,15 +7,18 @@ void mdns_setup() {
   }
   Serial.println("mDNS responder started");
 
-  Serial.print(F("http://"));
-  Serial.println(WiFi.localIP());
+  String protocol = F("http://");
+  String ip = WiFi.localIP().toString();
+  String local = F(".local");
 
-  Serial.print(F("http://"));
-  Serial.println(mdnsName);
+  Serial.println(protocol + ip);
+  Serial.println(protocol + mdnsName);
+  Serial.println(protocol + mdnsName + local);
 
-  Serial.print(F("http://"));
-  Serial.print(mdnsName);
-  Serial.println(F(".local"));
+  #ifdef USE_OLED
+  oled_setup();
+  oled_msg("Server mode\n" + protocol + ip, SPACE_TWO_LINES);
+  #endif
 }
 
 void mdns_loop() {
