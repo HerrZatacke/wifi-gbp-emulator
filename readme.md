@@ -29,8 +29,8 @@ This will alternate the bootmode automatically between printer and server on eac
 * Websocket implementation has been removed due to performance issues, instead the ESP should now detect the presence of the GameBoy over it's 5V signal. and Either Boot in "server" or "printer" mode  
 
 ## OLED Display
-You can add a [tiny oled display like this](https://www.amazon.de/gp/product/B07BDFXFRK)
-To use it, you need to uncomment `#define USE_OLED` and the following lines
+You can add a [tiny oled display like this](https://www.amazon.de/gp/product/B07BDFXFRK)   
+To use it, you need to uncomment `#define USE_OLED` and the following lines   
 It will even display a tiny printer icon when in print mode !["Tiny printer-icon"](docs/printer-icon.png "Tiny printer-icon")
 
 ## Demo Video
