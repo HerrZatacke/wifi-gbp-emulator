@@ -1,4 +1,13 @@
 {
-  "STASSID":"Your SSID",
-  "STAPSK":"Your wifi password"
+  "mdns": "gameboyprinter",
+  "ap": {
+    "ssid":"gameboyprinter",
+    "psk":"gameboyprinter"
+  },
+  "networks": [
+    {
+      "ssid":"Your SSID",
+      "psk":"Your wifi password"
+    }
+  ]
 }

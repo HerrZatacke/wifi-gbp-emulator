@@ -11,6 +11,44 @@ Through this it is possible to use the +5v provided by the GameBoy to switch the
 If you dont want to solder, you can uncomment `#define ALTERNATE_BOOT_MODE` in `websocket-gbp-emulator.ino`.  
 This will alternate the bootmode automatically between printer and server on each boot, so you can use the reset-button to switch modes.  
 
+## Configuration
+If the device is not configured the default settings (AP only) will be used
+### Default config
+If not present the ESP will set up an accesspoint with ssid/password `gameboyprinter`.     
+It will output it's IP adress over the serial monitor and on an optionally connected display.  
+It will also be discoverable via Bonjour/mDNS via `http://gameboyprinter.local`.
+### Manual Setup via `conf.json`
+Wifi setup can be done via a file `conf.json` in the `/data/` folder.  
+The basic format are as follows:
+```` json
+{
+  "mdns": "gameboyprinter",
+  "ap": {
+    "ssid":"gameboyprinter",
+    "psk":"gameboyprinter"
+  },
+  "networks": [
+    {
+      "ssid":"Your SSID",
+      "psk":"Your wifi password"
+    }
+  ]
+}
+````
+
+All config options are optional
+#### `"mdns"`
+Change the name by which the printer will be accessible via Bonjour/mDNS
+#### `"ap"`
+AccessPoint config
+Enter ssid/psk to open an accesspoint different to the default one.
+#### `"networks"`
+Array of objects with keys ssid/psk.  
+The first reachable network in that list will be used to conect to.  
+⚠ Do not use more than 10 elements. Otherwise you might see an "Out of Memory" error in the serial monitor.
+### Manual Setup via web interface
+ToDo / not yet implemented
+
 ## Links / Research
 * Original GPB-Emulator by [mofosyne: Arduino Gameboy Printer Emulator](https://github.com/mofosyne/arduino-gameboy-printer-emulator)  
 * Tutorial on how to implement Websockets with an ESP2866 by [ttapa: WebSocket communication](https://tttapa.github.io/ESP8266/Chap14%20-%20WebSocket.html)  
