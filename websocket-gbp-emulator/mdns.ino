@@ -17,7 +17,12 @@ void mdns_setup() {
 
   #ifdef USE_OLED
   oled_setup();
-  oled_msg("Server mode\n" + protocol + ip, SPACE_TWO_LINES);
+  oled_msg(
+    "Server mode",
+    protocol + ip,
+    "AP: gameboyprinter",
+    protocol +  WiFi.softAPIP().toString()
+  );
   #endif
 }
 

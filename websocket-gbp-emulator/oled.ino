@@ -61,7 +61,23 @@ void oled_setup() {
     for(;;); // Don't proceed, loop forever
   }
 
-  oled_msg("Booting...", SPACE_ONE_LINE);
+  oled_msg("Booting...");
+}
+
+void oled_msg(String message) {
+  oled_msg(message, 12);
+}
+
+void oled_msg(String message1, String message2) {
+  oled_msg(message1 + "\n" + message2, 8);
+}
+
+void oled_msg(String message1, String message2, String message3) {
+  oled_msg(message1 + "\n" + message2 + "\n" + message3, 4);
+}
+
+void oled_msg(String message1, String message2, String message3, String message4) {
+  oled_msg(message1 + "\n" + message2 + "\n" + message3 + "\n" + message4, 0);
 }
 
 void oled_msg(String message, byte y) {
@@ -71,6 +87,8 @@ void oled_msg(String message, byte y) {
   display.setCursor(0, y);
   display.println(message);
   display.display();
+  // you can invert the display to easily spot the actual dimensions
+  // display.invertDisplay(true);
 }
 
 void oled_drawLogo() {

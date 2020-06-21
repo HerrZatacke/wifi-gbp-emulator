@@ -18,8 +18,6 @@
 // uncomment if using an adafruit oled display
 // check oled.ino to define pins
 // #define USE_OLED
-// #define SPACE_ONE_LINE 16
-// #define SPACE_TWO_LINES 12
 
 #ifdef FSTYPE_LITTLEFS
 #include <LittleFS.h>
@@ -70,7 +68,7 @@ void setup() {
     espprinter_setup();
 
     #ifdef USE_OLED
-    oled_msg("Printer mode", SPACE_ONE_LINE);
+    oled_msg("Printer mode");
     oled_drawLogo();
     #endif
   } else {
