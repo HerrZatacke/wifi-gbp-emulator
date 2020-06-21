@@ -16,6 +16,7 @@ If the device is not configured the default settings (AP only) will be used
 ### Default config
 If not present the ESP will set up an accesspoint with ssid/password `gameboyprinter`.     
 It will output it's IP adress over the serial monitor and on an optionally connected display.  
+(usually the device should be accessible via `http://192.168.1.4`)    
 It will also be discoverable via Bonjour/mDNS via `http://gameboyprinter.local`.
 ### Manual Setup via `conf.json`
 Wifi setup can be done via a file `conf.json` in the `/data/` folder.  
