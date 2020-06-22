@@ -8,23 +8,21 @@ void mdns_setup() {
   Serial.println("mDNS responder started");
 
   String protocol = F("http://");
-  String nwip = WiFi.localIP().toString();
-  String apip = WiFi.softAPIP().toString();
+  String ip = "";
   String local = F(".local");
 
-  if (hasAccesPointSettings) {
-    Serial.println(protocol + apip);;
-  }
-
   if (hasNetworkSettings) {
-    Serial.println(protocol + nwip);
+    ip = WiFi.localIP().toString();
+  } else {
+    ip = WiFi.softAPIP().toString();
   }
 
+  Serial.println(protocol + ip);
   Serial.println(protocol + mdnsName);
   Serial.println(protocol + mdnsName + local);
 
   #ifdef USE_OLED
-  showWifiStats();
+  showWifiStats(ip, mdnsName + local);
   #endif
 }
 

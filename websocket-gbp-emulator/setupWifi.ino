@@ -31,13 +31,12 @@ void setupWifi() {
         accesPointSSID = String(conf["ap"]["ssid"].as<String>());
         accesPointPassword = String(conf["ap"]["psk"].as<String>());
 
-        if (accesPointSSID != "null") {
-          hasAccesPointSettings = true;
-        } else {
-          Serial.println("AccessPoint ssid is null");
+        if (accesPointSSID == "null") {
+          accesPointSSID = DEFAULT_AP_SSID;
+          accesPointPassword = DEFAULT_AP_PSK;
         }
       } else {
-        Serial.println("No AccessPoint settings configured");
+        Serial.println("No AccessPoint settings configured - using default");
       }
     } else {
       Serial.println("Error parsing conf.json");
@@ -47,96 +46,70 @@ void setupWifi() {
     Serial.println("Could not open conf.json");
   }
 
-  if (!hasNetworkSettings && !hasAccesPointSettings) {
-    Serial.println("\nNo network settings found - using default AccesPoint");
-    accesPointSSID = DEFAULT_AP_SSID;
-    accesPointPassword = DEFAULT_AP_PSK;
-    hasAccesPointSettings = true;
-  }
-
-  // Set correct wifi mode depending on configuration
-  WiFiMode_t wifiMode = WIFI_OFF;
-  if(hasAccesPointSettings && hasNetworkSettings) {
-    wifiMode = WIFI_AP_STA;
-  } else if(hasNetworkSettings) {
-    wifiMode = WIFI_STA;
-  } else if(hasAccesPointSettings) {
-    wifiMode = WIFI_AP;
-  }
-  WiFi.mode(wifiMode);
-
-  // Open AccessPoint
-  if(hasAccesPointSettings) {
-    WiFi.softAP(accesPointSSID, accesPointPassword);
-    Serial.println("AccessPoint " + accesPointSSID + " started");
-  }
-
   // Connect to existing WiFi
   if (hasNetworkSettings) {
     Serial.print("Connecting to wifi ");
+    WiFi.mode(WIFI_STA);
 
     bool connectionBlink = false;
     unsigned int connTimeout = millis() + WIFI_CONNECT_TIMEOUT;
     unsigned int connTick = 0;
 
     while (hasNetworkSettings && (wifiMulti.run() != WL_CONNECTED)) {
-      delay(200);
+      delay(250);
       digitalWrite(LED_BLINK_PIN, connectionBlink);
       connectionBlink = !connectionBlink;
       connTick++;
 
       unsigned int remain = connTimeout - millis();
       if (remain <= 0 || remain > WIFI_CONNECT_TIMEOUT) {
+        Serial.println("WiFi Connection timeout - starting AccesPoint");
         hasNetworkSettings = false;
       }
 
-      if (connTick % 5 == 0) {
+      if (connTick % 4 == 0) {
         Serial.print(".");
         #ifdef USE_OLED
         oled_msg("Connecting to wifi...", String(remain / 1000) + "s");
         #endif
       }
     }
+  }
 
-    if (!hasNetworkSettings) {
-      if (!hasAccesPointSettings) {
-        Serial.println("WiFi Connection timeout - starting Default AccesPoint");
-        accesPointSSID = DEFAULT_AP_SSID;
-        accesPointPassword = DEFAULT_AP_PSK;
-        hasAccesPointSettings = true;
-        WiFi.softAP(accesPointSSID, accesPointPassword);
-        Serial.println("AccessPoint " + accesPointSSID + " started");
-      }
-    } else {
-      Serial.print("\nConnected to ");
-      Serial.print(WiFi.SSID());
-      Serial.print(" with IP address: ");
-      Serial.println(WiFi.localIP());
-    }
+  // will be false if no connection to any ssid could be made
+  if (hasNetworkSettings) {
+    Serial.print("\nConnected to ");
+    Serial.print(WiFi.SSID());
+    Serial.print(" with IP address: ");
+    Serial.println(WiFi.localIP());
+    return;
+  } else {
+    WiFi.mode(WIFI_AP);
+    WiFi.softAP(accesPointSSID, accesPointPassword);
+    Serial.println("AccessPoint " + accesPointSSID + " started");
   }
 }
 
 #ifdef USE_OLED
-void showWifiStats() {
-  String protocolShort = F("://");
+void showWifiStats(String ip, String mdnsName) {
+  String protocolShort = F("IP: ");
 
-  if(hasAccesPointSettings && hasNetworkSettings) {
+  if(hasNetworkSettings) {
     oled_msg(
-      "AP: " + accesPointSSID, // + " " + protocolShort + mdnsName,
-      protocolShort + WiFi.softAPIP().toString(),
-      "NET: " + WiFi.SSID(),
-      protocolShort + WiFi.localIP().toString()
+      "Connected to WiFi",
+      "SSID: " + WiFi.SSID(),
+      protocolShort + ip,
+      mdnsName
     );
-  } else if(hasAccesPointSettings) {
+  } else {
     oled_msg(
-      "AP: " + accesPointSSID, // + " " + protocolShort + mdnsName,
-      protocolShort + WiFi.softAPIP().toString()
-    );
-  } else if (hasNetworkSettings) {
-    oled_msg(
-      "NET: " + WiFi.SSID(), // + " " + protocolShort + mdnsName,
-      protocolShort + WiFi.localIP().toString()
+      "AP: " + accesPointSSID,
+      "PASS: " + accesPointPassword,
+      protocolShort + ip,
+      mdnsName
     );
   }
+
+  oled_drawIcon();
 }
 #endif

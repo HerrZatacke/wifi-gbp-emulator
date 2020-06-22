@@ -7,7 +7,7 @@
 #define DEFAULT_AP_SSID "gameboyprinter"
 #define DEFAULT_AP_PSK "gameboyprinter"
 #define DEFAULT_MDNS_NAME "gameboyprinter"
-#define WIFI_CONNECT_TIMEOUT 60000
+#define WIFI_CONNECT_TIMEOUT 10000
 
 // LittleFS _seems_ 100% slower than SPIFFS in this use-case
 // enable only if you think you know what you are doing
@@ -43,9 +43,8 @@ ESP8266WebServer server(80);
 
 // Variables used across multiple files, so they need to be defined here
 String mdnsName = DEFAULT_MDNS_NAME;
-String accesPointSSID = "";
-String accesPointPassword = "";
-bool hasAccesPointSettings = false;
+String accesPointSSID = DEFAULT_AP_SSID;
+String accesPointPassword = DEFAULT_AP_PSK;
 bool hasNetworkSettings = false;
 bool bootMode;
 
