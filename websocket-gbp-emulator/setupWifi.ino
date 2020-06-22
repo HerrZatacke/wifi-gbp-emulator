@@ -104,7 +104,7 @@ void showWifiStats(String ip, String mdnsName) {
   } else {
     oled_msg(
       "AP: " + accesPointSSID,
-      "PASS: " + accesPointPassword,
+      "PW: " + accesPointPassword,
       protocolShort + ip,
       mdnsName
     );
