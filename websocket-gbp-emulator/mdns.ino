@@ -1,15 +1,18 @@
 #include <ESP8266mDNS.h>
 
 void mdns_setup() {
+  String protocol = F("http://");
+  String ip = "";
+  String local = F(".local");
+
   if (!MDNS.begin(mdnsName)) {
     Serial.println("Error setting up MDNS responder!");
   }
 
-  Serial.println("mDNS responder started");
+  MDNS.addService("http", "tcp", 80);
+  WiFi.hostname(mdnsName + local);
 
-  String protocol = F("http://");
-  String ip = "";
-  String local = F(".local");
+  Serial.println("mDNS responder started");
 
   if (hasNetworkSettings) {
     ip = WiFi.localIP().toString();
