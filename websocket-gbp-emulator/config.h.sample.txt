@@ -13,7 +13,6 @@
 // #define MAX_IMAGES 150
 
 // Uncomment if using an adafruit oled display
-// check oled.ino to define pins
 // #define USE_OLED
 // Alternative OLED Pins
 // #define OLED_SDA 0
