@@ -1,7 +1,3 @@
-#define MISO 12
-#define MOSI 13
-#define SCLK 14
-
 void processByte(byte data);
 void storeData(byte *image_data);
 unsigned int nextFreeFileIndex();
@@ -23,20 +19,20 @@ bool blinkCycle = false;
 unsigned int freeFileIndex = 0;
 
 void ICACHE_RAM_ATTR gbClockHit() {
-  if (digitalRead(MOSI) == HIGH) {
+  if (digitalRead(GB_MOSI) == HIGH) {
     current_byte |= 0x01;
   }
 
   if (packet_count == (packet_length - 3)) {
     if (clock_count == 7) {
-      digitalWrite(MISO, HIGH);
+      digitalWrite(GB_MISO, HIGH);
     }
   }
   if (packet_count == (packet_length - 2)) {
     if (clock_count == 0 || clock_count == 7) {
-      digitalWrite(MISO, LOW);
+      digitalWrite(GB_MISO, LOW);
     } else if (clock_count == 6) {
-      digitalWrite(MISO, HIGH);
+      digitalWrite(GB_MISO, HIGH);
     }
   }
 
@@ -134,7 +130,7 @@ void resetValues() {
 }
 
 void storeData(byte *image_data) {
-  detachInterrupt(SCLK);
+  detachInterrupt(GB_SCLK);
 
   unsigned long perf = millis();
   char fileName[31];
@@ -157,7 +153,7 @@ void storeData(byte *image_data) {
 
   if (freeFileIndex <= MAX_IMAGES) {
     resetValues();
-    attachInterrupt(SCLK, gbClockHit, RISING);
+    attachInterrupt(GB_SCLK, gbClockHit, RISING);
   } else {
     Serial.println("no more space on printer\nrebooting...");
     ESP.restart();
@@ -177,9 +173,9 @@ void full() {
 
 void espprinter_setup() {
   // Setup ports
-  pinMode(MISO, OUTPUT);
-  pinMode(MOSI, INPUT);
-  pinMode(SCLK, INPUT);
+  pinMode(GB_MISO, OUTPUT);
+  pinMode(GB_MOSI, INPUT);
+  pinMode(GB_SCLK, INPUT);
 
   freeFileIndex = nextFreeFileIndex();
 
@@ -192,7 +188,7 @@ void espprinter_setup() {
   resetValues();
 
   // Setup Clock Interrupt
-  attachInterrupt(SCLK, gbClockHit, RISING);
+  attachInterrupt(GB_SCLK, gbClockHit, RISING);
 }
 
 

@@ -1,4 +1,5 @@
-#include <uri/UriBraces.h>
+
+ESP8266WebServer server(80);
 
 // delete all stored dumps
 void clearDumps() {

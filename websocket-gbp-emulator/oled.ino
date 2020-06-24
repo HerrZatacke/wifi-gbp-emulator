@@ -12,8 +12,12 @@
 #define OLED_RESET -1
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
-#define SDA 0
-#define SCL 4
+#ifndef OLED_SDA
+#define OLED_SDA 0
+#endif
+#ifndef OLED_SCL
+#define OLED_SCL 4
+#endif
 
 #define LOGO_HEIGHT 27
 #define LOGO_WIDTH 32
@@ -67,7 +71,7 @@ static const unsigned char PROGMEM icon_wifi_bmp[] =
 };
 
 void oled_setup() {
-  Wire.begin(SDA, SCL);
+  Wire.begin(OLED_SDA, OLED_SCL);
 
   // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
   if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { // Address 0x3C for 128x32
@@ -101,8 +105,9 @@ void oled_msg(String message, byte y) {
   display.setCursor(0, y);
   display.println(message);
   display.display();
-  // you can invert the display to easily spot the actual dimensions
-  // display.invertDisplay(true);
+  #ifdef OLED_INVERT
+  display.invertDisplay(true);
+  #endif
 }
 
 void oled_drawLogo() {

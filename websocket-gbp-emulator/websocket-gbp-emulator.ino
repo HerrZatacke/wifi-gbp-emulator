@@ -1,29 +1,45 @@
+#include "config.h"
 #include <FS.h>
 #include <ArduinoJson.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266WiFiMulti.h>
 #include <ESP8266WebServer.h>
+#include <ESP8266mDNS.h>
+#include <uri/UriBraces.h>
 
+#ifndef DEFAULT_AP_SSID
 #define DEFAULT_AP_SSID "gameboyprinter"
+#endif
+#ifndef DEFAULT_AP_PSK
 #define DEFAULT_AP_PSK "gameboyprinter"
+#endif
+#ifndef DEFAULT_MDNS_NAME
 #define DEFAULT_MDNS_NAME "gameboyprinter"
+#endif
+#ifndef WIFI_CONNECT_TIMEOUT
 #define WIFI_CONNECT_TIMEOUT 10000
-
-// LittleFS _seems_ 100% slower than SPIFFS in this use-case
-// enable only if you think you know what you are doing
-// #define FSTYPE_LITTLEFS
-
-// Alternate boot mode lets you toggle the mode by using the reset switch
-// If commented out, the signal on D0 is being used to determine mode
-#define ALTERNATE_BOOT_MODE
-
-// Number of dumps after which the printer reports to be full.
-// due to performance reasons, there should always remain some free space on the Filesystem
+#endif
+#ifndef MAX_IMAGES
 #define MAX_IMAGES 150
-
-// uncomment if using an adafruit oled display
-// check oled.ino to define pins
-// #define USE_OLED
+#endif
+#ifndef WIFI_BLINK_DELAY
+#define WIFI_BLINK_DELAY 2000
+#endif
+#ifndef LED_BLINK_PIN
+#define LED_BLINK_PIN 2
+#endif
+#ifndef GB_5V_OUT
+#define GB_5V_OUT 5
+#endif
+#ifndef GB_MISO
+#define GB_MISO 12
+#endif
+#ifndef GB_MOSI
+#define GB_MOSI 13
+#endif
+#ifndef GB_SCLK
+#define GB_SCLK 14
+#endif
 
 #ifdef FSTYPE_LITTLEFS
 #include <LittleFS.h>
@@ -32,14 +48,8 @@
 #define FS SPIFFS
 #endif
 
-#define LED_BLINK_PIN 2
-#define WIFI_BLINK_DELAY 2000
-#define GB_5V_OUT 5
-
 #define MODE_PRINT true
 #define MODE_SERVE false
-
-ESP8266WebServer server(80);
 
 // Variables used across multiple files, so they need to be defined here
 String mdnsName = DEFAULT_MDNS_NAME;
