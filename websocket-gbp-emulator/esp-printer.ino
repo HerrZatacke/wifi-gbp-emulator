@@ -199,8 +199,8 @@ void espprinter_setup() {
 #ifdef USE_OLED
 void showPrinterStats() {
   oled_msg(
-    "Printer mode",
-    String(freeFileIndex - 1) + "/" + String(MAX_IMAGES)
+    String(freeFileIndex - 1) + "/" + String(MAX_IMAGES) + " used",
+    String(MAX_IMAGES + 1 - freeFileIndex) + " remaining"
   );
   oled_drawLogo();
 }
