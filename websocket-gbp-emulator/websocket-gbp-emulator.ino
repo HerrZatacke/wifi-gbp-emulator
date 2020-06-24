@@ -23,10 +23,10 @@ void setup() {
   pinMode(GB_5V_OUT, INPUT);
   pinMode(LED_BLINK_PIN, OUTPUT);
 
-  #ifdef ALTERNATE_BOOT_MODE
-  bootMode = fs_alternateBootMode();
-  #else
+  #ifdef SENSE_BOOT_MODE
   bootMode = digitalRead(GB_5V_OUT);
+  #else
+  bootMode = fs_alternateBootMode();
   #endif
 
   if (bootMode == MODE_PRINT) {
@@ -61,7 +61,7 @@ void loop() {
     espprinter_loop();
   }
 
-  #ifndef ALTERNATE_BOOT_MODE
+  #ifdef SENSE_BOOT_MODE
   if (bootMode != digitalRead(GB_5V_OUT)) {
    ESP.restart();
   }

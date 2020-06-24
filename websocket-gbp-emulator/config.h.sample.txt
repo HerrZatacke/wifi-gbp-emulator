@@ -3,9 +3,8 @@
 // enable only if you think you know what you are doing
 // #define FSTYPE_LITTLEFS
 
-// Alternate boot mode lets you toggle the mode by using the reset switch
-// If commented out, the signal on pin GB_5V_OUT is being used to determine mode
-// #define ALTERNATE_BOOT_MODE
+// Sense boot mode lets you use the signal on pin GB_5V_OUT to determine printer/server mode
+// #define SENSE_BOOT_MODE
 // #define GB_5V_OUT 5
 
 // Number of dumps after which the printer reports to be full.
