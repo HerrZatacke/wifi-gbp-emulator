@@ -209,6 +209,8 @@ void showPrinterStats() {
 void espprinter_loop() {
   if (lastByteReceived != 0 && lastByteReceived + 500 < millis()) {
     resetValues();
+    #ifdef USE_OLED
     showPrinterStats();
+    #endif
   }
 }
