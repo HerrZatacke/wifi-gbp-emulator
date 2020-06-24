@@ -194,9 +194,13 @@ void espprinter_setup() {
 
 #ifdef USE_OLED
 void showPrinterStats() {
+  char printed[20];
+  char remain[20];
+  sprintf(printed, "%03d printed", freeFileIndex - 1);
+  sprintf(remain, "%03d remaining", MAX_IMAGES + 1 - freeFileIndex);
   oled_msg(
-    String(freeFileIndex - 1) + "/" + String(MAX_IMAGES) + " used",
-    String(MAX_IMAGES + 1 - freeFileIndex) + " remaining"
+    printed,
+    remain
   );
   oled_drawLogo();
 }
