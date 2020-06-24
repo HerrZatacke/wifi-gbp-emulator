@@ -78,6 +78,8 @@ To use it, you need to uncomment `#define USE_OLED` and the following lines
 It will even display a tiny printer icon when in print mode !["Tiny printer-icon"](docs/printer-icon.png "Tiny printer-icon")
 
 ## Demo Video
-⚠ Obviusly you should not power the ESP from the GameBoy, as this might damage the GameBoy itself.
+This video shows an older version of the printer-emulator code.    
+### ⚠ Take care ⚠
+You should not power the ESP from the GameBoy, as this might damage the GameBoy itself. What you see in the video was meant as a proof of concept which is basically not implemented anymore.  
 
 [![Video of the first prototype](docs/video.jpg "Video of the first prototype")](https://www.youtube.com/watch?v=HHPHkeio85U)
