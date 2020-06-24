@@ -4,6 +4,12 @@ A GameBoy printer emulator which provides the received data over a websocket.
 This code has been created for a "LOLIN(WEMOS) D1 R2 & mini" [ESP2866 based board](https://github.com/esp8266/arduino).   
 For uploading the Filesystem the LittleFS tool [Arduino IDE Plugin](https://github.com/earlephilhower/arduino-esp8266littlefs-plugin/releases) is required
 
+## Setup
+Before compiling the project you need to create a `config.h` inside the project folder.  
+(`config.sample.h` should be used as a reference)
+If you run the default setup (similar to the WiFi-Printer) that file can be left empty.
+If your (hardware-)setup is different you can adjust the parameters there. 
+
 ## Bootmode
 The code is designed to check pin `D0` for high to boot in printer mode.  
 Through this it is possible to use the +5v provided by the GameBoy to switch the mode.  
