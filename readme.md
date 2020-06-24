@@ -6,7 +6,7 @@ For uploading the Filesystem the LittleFS tool [Arduino IDE Plugin](https://gith
 
 ## Setup
 Before compiling the project you need to create a `config.h` inside the project folder.  
-(`config.h.sample.txt` should be used as a reference)  
+([`config.h.sample.txt`](/config.h.sample.txt) should be used as a reference)  
 If you run the default setup (similar to the WiFi-Printer) that file can be left empty.  
 If your (hardware-)setup is different you can adjust the parameters there.  
 
