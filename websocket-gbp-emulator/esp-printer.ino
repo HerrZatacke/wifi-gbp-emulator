@@ -189,15 +189,26 @@ void espprinter_setup() {
     full();
   }
 
-  lastByteReceived = millis();
   resetValues();
 
   // Setup Clock Interrupt
   attachInterrupt(SCLK, gbClockHit, RISING);
 }
 
+
+#ifdef USE_OLED
+void showPrinterStats() {
+  oled_msg(
+    "Printer mode",
+    String(freeFileIndex - 1) + "/" + String(MAX_IMAGES)
+  );
+  oled_drawLogo();
+}
+#endif
+
 void espprinter_loop() {
   if (lastByteReceived != 0 && lastByteReceived + 500 < millis()) {
     resetValues();
+    showPrinterStats();
   }
 }

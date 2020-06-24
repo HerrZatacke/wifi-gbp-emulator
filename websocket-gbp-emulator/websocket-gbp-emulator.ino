@@ -77,10 +77,8 @@ void setup() {
     digitalWrite(LED_BLINK_PIN, false);
     fs_info();
     espprinter_setup();
-
     #ifdef USE_OLED
-    oled_msg("Printer mode");
-    oled_drawLogo();
+    showPrinterStats();
     #endif
   } else {
     Serial.println("\n\n-----------------------");
