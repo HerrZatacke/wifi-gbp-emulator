@@ -56,6 +56,10 @@ The first reachable network in that list will be used to conect to.
 ### Manual Setup via web interface
 ToDo / not yet implemented
 
+## Automatic update of the webserver content
+* You can run [`update_w.ps1`](./update_w.ps1) (windows-powershell) or [`update_w.sh`](./update_w.sh) (bash) to download the latest release of the [gb-printer-web](https://github.com/HerrZatacke/gb-printer-web/releases/) and automatically unzip it to the correct folder.  
+* After doing so upload the content of that folder to the ESP via the [arduino-esp8266fs-plugin](https://github.com/esp8266/arduino-esp8266fs-plugin/releases/)
+
 ## Links / Research
 * Original GPB-Emulator by [mofosyne: Arduino Gameboy Printer Emulator](https://github.com/mofosyne/arduino-gameboy-printer-emulator)  
 * Tutorial on how to implement Websockets with an ESP2866 by [ttapa: WebSocket communication](https://tttapa.github.io/ESP8266/Chap14%20-%20WebSocket.html)  
@@ -63,11 +67,6 @@ ToDo / not yet implemented
 * ESP2866 D1 Mini [Pinout](https://escapequotes.net/esp8266-wemos-d1-mini-pins-and-diagram/)
 * SPIFFS/LittleFS [Filesystem Docs](https://arduino-esp8266.readthedocs.io/en/latest/filesystem.html)
 * [Link cable breakout board](https://github.com/Palmr/gb-link-cable)
-
-## ToDo's
-* ~~[mDNS](https://tttapa.github.io/ESP8266/Chap08%20-%20mDNS.html)~~
-* ~~Webserver serving a static Web-Application (will be in a [different Repository](https://github.com/HerrZatacke/gb-printer-web))~~
-
 
 ## Done
 * ~~Websockets serving received printer packages~~
