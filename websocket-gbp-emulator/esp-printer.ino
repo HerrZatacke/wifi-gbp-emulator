@@ -196,8 +196,8 @@ void espprinter_setup() {
 void showPrinterStats() {
   char printed[20];
   char remain[20];
-  sprintf(printed, "%03d printed", freeFileIndex - 1);
-  sprintf(remain, "%03d remaining", MAX_IMAGES + 1 - freeFileIndex);
+  sprintf(printed, "%3d printed", freeFileIndex - 1);
+  sprintf(remain, "%3d remaining", MAX_IMAGES + 1 - freeFileIndex);
   oled_msg(
     printed,
     remain
