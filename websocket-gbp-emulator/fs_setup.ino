@@ -22,7 +22,7 @@ void fs_info() {
   Serial.println(fs_info.usedBytes);
 }
 
-#ifdef ALTERNATE_BOOT_MODE
+#ifndef SENSE_BOOT_MODE
 bool fs_alternateBootMode() {
   String bootFile = "bootmode.txt";
   if (FS.exists(bootFile)) {

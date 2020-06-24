@@ -1,4 +1,3 @@
-#include <ESP8266mDNS.h>
 
 void mdns_setup() {
   String protocol = F("http://");
