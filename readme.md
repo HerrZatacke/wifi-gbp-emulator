@@ -6,9 +6,9 @@ For uploading the Filesystem the LittleFS tool [Arduino IDE Plugin](https://gith
 
 ## Setup
 Before compiling the project you need to create a `config.h` inside the project folder.  
-(`config.h.sample.txt` should be used as a reference)
-If you run the default setup (similar to the WiFi-Printer) that file can be left empty.
-If your (hardware-)setup is different you can adjust the parameters there. 
+(`config.h.sample.txt` should be used as a reference)  
+If you run the default setup (similar to the WiFi-Printer) that file can be left empty.  
+If your (hardware-)setup is different you can adjust the parameters there.  
 
 ## Bootmode
 The code is designed to check pin `D0` for high to boot in printer mode.  
