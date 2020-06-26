@@ -152,7 +152,6 @@ void storeData(byte *image_data) {
   freeFileIndex++;
 
   if (freeFileIndex <= MAX_IMAGES) {
-    resetValues();
     attachInterrupt(GB_SCLK, gbClockHit, RISING);
   } else {
     Serial.println("no more space on printer\nrebooting...");
