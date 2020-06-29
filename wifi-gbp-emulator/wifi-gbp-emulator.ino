@@ -1,4 +1,4 @@
-#include "websocket-gbp-emulator.h"
+#include "wifi-gbp-emulator.h"
 
 // Variables used across multiple files, so they need to be defined here
 String mdnsName = DEFAULT_MDNS_NAME;
