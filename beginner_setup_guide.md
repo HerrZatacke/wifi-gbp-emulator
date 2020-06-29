@@ -144,25 +144,21 @@ You will also need to modify your config.h and reupload it to your ESP8266. Remo
 
 ## FAQ / Troubleshooting
 
-### Printer Error #2
+#### Printer Error #2
 Your Link Cable is not connected correctly to the ESP8266. Check your cable connections.
 
-### Website only shows "REKT"
+#### Website only shows "REKT"
 You forgot to upload the additional data. Please Check Step 1.3 and 1.4
 
 ### FAQ
-**Q:** How many pictures can I save on the ESP8266?
-
+**Q: How many pictures can I save on the ESP8266?**
 **A:** 150. After that you should remove older pictures after backing them up to your PC.
 
-**Q:** Can I run the software I on the Gameboy WiFi printer I bought on Etsy?
-
+**Q: Can I run the software I on the Gameboy WiFi printer I bought on Etsy?**
 **A:** Yes, you can do that. Please be aware that this will remove the original software from the Gameboy WiFi printer. 
 
-**Q:** This is to complicated for me / My question isn't answered in the FAQ. Where can I find help? 
-
+**Q: This is to complicated for me / My question isn't answered in the FAQ. Where can I find help?** 
 **A:** You can ask any questions in the #development channel on the [Gameboy Camera Club Discord](https://bit.ly/gbccd)
 
-**Q:** Is there an easier option that doesn't require soldering?
-
+**Q: Is there an easier option that doesn't require soldering?**
 **A:** You can find a list of options [here](https://gameboymaniac.com/how-to-tranfer-photos-from-the-game-boy-camera-to-your-computer/) 
