@@ -61,8 +61,7 @@ ToDo / not yet implemented
 * After doing so upload the content of that folder to the ESP via the [arduino-esp8266fs-plugin](https://github.com/esp8266/arduino-esp8266fs-plugin/releases/) in the Arduino IDE.
 
 ## Hardware Setup
-
-For a basic setup only the connection with a Gameboy Link Cable is required. 
+A beginners guide can be found [here](beginner_setup_guide.md)
 
 Gameboy Original/Color Link Cable Pinout
 ```
