@@ -95,9 +95,6 @@ Take your Link Cable and cut it in half. You will find six (6) thin wires inside
 
 We now will connect the wires to breakout board. Take your exposed connector and look at it from the front with the straight side up.
 
-![Link Cable Connector](/docs/link_cable_connector.jpg)
-
-
 We will have to connect the ports 2-6 with jumper cables. Following is a diagram on how the ports are numerated:
 
 ```
