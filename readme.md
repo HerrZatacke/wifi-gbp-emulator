@@ -1,8 +1,8 @@
 # Websocket GBP Emulator
 
 A GameBoy printer emulator which provides the received data over a websocket.
-This code has been created for a "LOLIN(WEMOS) D1 R2 & mini" [ESP2866 based board](https://github.com/esp8266/arduino).   
-For uploading the Filesystem the LittleFS tool [Arduino IDE Plugin](https://github.com/earlephilhower/arduino-esp8266littlefs-plugin/releases) is required
+This code has been created for a "LOLIN(WEMOS) D1 R2 & mini" [ESP8266 based board](https://github.com/esp8266/arduino).   
+For uploading the Filesystem the LittleFS tool [Arduino IDE Plugin](https://github.com/earlephilhower/arduino-esp8266littlefs-plugin/releases) is required. Follow the installation instructions [here](https://github.com/earlephilhower/arduino-esp8266littlefs-plugin/)
 
 ## Setup
 Before compiling the project you need to create a `config.h` inside the project folder.  
@@ -58,7 +58,29 @@ ToDo / not yet implemented
 
 ## Automatic update of the webserver content
 * You can run [`update_w.ps1`](./update_w.ps1) (windows-powershell) or [`update_w.sh`](./update_w.sh) (bash) to download the latest release of the [gb-printer-web](https://github.com/HerrZatacke/gb-printer-web/releases/) and automatically unzip it to the correct folder.  
-* After doing so upload the content of that folder to the ESP via the [arduino-esp8266fs-plugin](https://github.com/esp8266/arduino-esp8266fs-plugin/releases/)
+* After doing so upload the content of that folder to the ESP via the [arduino-esp8266fs-plugin](https://github.com/esp8266/arduino-esp8266fs-plugin/releases/) in the Arduino IDE.
+
+## Hardware Setup
+
+For a basic setup only the connection with a Gameboy Link Cable is required. 
+
+Gameboy Original/Color Link Cable Pinout
+```
+ __________
+|  6  4  2 |
+ \_5__3__1_/ (at cable)
+
+| Link Cable | ESP8266 |
+|------------|---------|
+| Pin 1      | D8      |
+| Pin 2      | D7      |
+| Pin 3      | D6      |
+| Pin 5      | D5      |
+| Pin 6      | G       |
+
+```
+
+Additionally an [OLED Display](https://github.com/HerrZatacke/websocket-gbp-emulator/#oled-display) can be added via D1 -> Display SCL / D2 -> Display SDA 
 
 ## Links / Research
 * Original GPB-Emulator by [mofosyne: Arduino Gameboy Printer Emulator](https://github.com/mofosyne/arduino-gameboy-printer-emulator)  
