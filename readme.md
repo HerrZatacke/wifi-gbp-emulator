@@ -1,12 +1,12 @@
-# Websocket GBP Emulator
+# WiFi GBP Emulator
 
-A GameBoy printer emulator which provides the received data over a websocket.
+A GameBoy printer emulator which provides the received data over a WiFi connection.
 This code has been created for a "LOLIN(WEMOS) D1 R2 & mini" [ESP8266 based board](https://github.com/esp8266/arduino).   
 For uploading the Filesystem the LittleFS tool [Arduino IDE Plugin](https://github.com/earlephilhower/arduino-esp8266littlefs-plugin/releases) is required. Follow the installation instructions [here](https://github.com/earlephilhower/arduino-esp8266littlefs-plugin/)
 
 ## Setup
 Before compiling the project you need to create a `config.h` inside the project folder.  
-([`config.h.sample.txt`](/websocket-gbp-emulator/config.h.sample.txt) should be used as a reference)  
+([`config.h.sample.txt`](/wifi-gbp-emulator/config.h.sample.txt) should be used as a reference)  
 If you run the default setup (similar to the WiFi-Printer) that file can be left empty.  
 If your (hardware-)setup is different you can adjust the parameters there.  
 
@@ -80,19 +80,15 @@ Gameboy Original/Color Link Cable Pinout
 
 ```
 
-Additionally an [OLED Display](https://github.com/HerrZatacke/websocket-gbp-emulator/#oled-display) can be added via D1 -> Display SCL / D2 -> Display SDA 
+Additionally an [OLED Display](https://github.com/HerrZatacke/wifi-gbp-emulator/#oled-display) can be added via D1 -> Display SCL / D2 -> Display SDA 
 
 ## Links / Research
 * Original GPB-Emulator by [mofosyne: Arduino Gameboy Printer Emulator](https://github.com/mofosyne/arduino-gameboy-printer-emulator)  
-* Tutorial on how to implement Websockets with an ESP2866 by [ttapa: WebSocket communication](https://tttapa.github.io/ESP8266/Chap14%20-%20WebSocket.html)  
+* Tutorial on how to work with an ESP2866 by [ttapa: ESP8266 Beginner's Guide](https://tttapa.github.io/ESP8266/Chap01%20-%20ESP8266.html)  
 * Potentially faster library for data transfer [applefreak/esp8266-gameboy-printer](https://github.com/applefreak/esp8266-gameboy-printer)
 * ESP2866 D1 Mini [Pinout](https://escapequotes.net/esp8266-wemos-d1-mini-pins-and-diagram/)
 * SPIFFS/LittleFS [Filesystem Docs](https://arduino-esp8266.readthedocs.io/en/latest/filesystem.html)
 * [Link cable breakout board](https://github.com/Palmr/gb-link-cable)
-
-## Done
-* ~~Websockets serving received printer packages~~
-* Websocket implementation has been removed due to performance issues, instead the ESP should now detect the presence of the GameBoy over it's 5V signal. and Either Boot in "server" or "printer" mode  
 
 ## OLED Display
 You can add a [tiny oled display like this](https://www.amazon.de/gp/product/B07BDFXFRK)   
