@@ -1,5 +1,5 @@
 .idea/
 .DS_Store
-websocket-gbp-emulator/data/*
-!websocket-gbp-emulator/data/conf.sample.json
-/websocket-gbp-emulator/config.h
+wifi-gbp-emulator/data/*
+!wifi-gbp-emulator/data/conf.sample.json
+/wifi-gbp-emulator/config.h
