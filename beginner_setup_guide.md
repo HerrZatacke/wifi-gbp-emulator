@@ -6,13 +6,12 @@ This guide provides a basic step by step guide on how to get your wifi-gbp-emula
 
 If you have any questions along the way or need help troubleshooting please refer to the [Gameboy Camera Club Discord Server](https://bit.ly/gbccd). 
 
-## Reqired hardware and tools
+## Hardware and tools
 
 ### Essential 
 * Windows/Mac/Linux-PC
-* [Arduino IDE](https://www.arduino.cc/en/Main/Software)
-* [arduino-esp8266fs-plugin](https://github.com/esp8266/arduino-esp8266fs-plugin/releases/)
-* ESP8266 Microcontroller  
+* ESP8266 Microcontroller
+* Micro USB Cable
 * Breakout Board
 * GB Link Cable
 * 3 Jumper Cables
@@ -24,6 +23,13 @@ If you have any questions along the way or need help troubleshooting please refe
 * [OLED Screen](https://www.amazon.de/gp/product/B07BDFXFRK)
 
 ## Step 1: Flash the board
+
+In this first step we will setup your computer to communicate with the ESP8266 Board and flash it. 
+
+Required Tools for this step:
+* PC/Laptop
+* MicroUSB Cable
+* ESP8266 Board
 
 ### 1.1 Install the Arduino IDE 
 Download the Arduino IDE either from the Website (Windows/MacOS) from [here](https://www.arduino.cc/en/Main/Software) and follow the basic installation process.
@@ -84,7 +90,17 @@ After you connected to the WiFi open your browser and type in the URL ```http://
 
 Now that you've got your ESP8266 running with the wifi-gbp-emulator it's time to connect your Gameboy to it to actually copy your images. There are non-destructive ways ([Example](https://github.com/Palmr/gb-link-cable)) but for ease of access we will have to cut up a link cable. You can either obtain those cheap from ebay or find reproductions on websites like AliExpress. 
 
-### 2.1 Link Cable connection without a multimeter
+Required tools for this step:
+* Flashed ESP8266 Board
+* Breakout Board
+* Gameboy Link Cable
+* 3 Jumper Cables
+* Multimeter
+
+Optional but recommended tools:
+* Soldering Iron
+
+### 2.1 Link Cable connection with a multimeter
 
 #### 2.1.1 Preperation
 Place your prepared ESP8266 Microcontroller on your breakout board.
@@ -129,6 +145,11 @@ ________
 
 ## Step 3: Testing your Installation
 
+Required tools for this step:
+* Flashed ESP8266
+* Breakout Board with modified Gameboy Link Cable
+* PC/Laptop/Mobile Phone/Tablett/A fridge with a Browser (well, anything that can open Websites and show graphics. ;) )
+
 Plug in your Link Cable to your Gameboy and start the ESP8266 though connecting it to a USB power source. Start your Gameboy with the Gameboy Camera inserted. Navigate to a picture you want to print and select ```Print```. You should see the ```Transferring``` screen and a short flashing of ```Printing``` -- You are done! Your wifi-gbp-emulator works successfully! _Tip: If you want to transfer all of your pictures right away press "Select" on your Gameboy in the main screen and use the Print Menu_
 
 Disconnect the link cable and powercycle the ESP8266; connect to the wireless accesspoint and open the website as explained in Step 1.6. Change to the "Import" tab, click on "check printer" and you should should be able to import your pictures. From there on you can download pictures through the gallery, change the color palett (re-import afterwards).
@@ -138,10 +159,22 @@ Pat yourself on the back and have fun! Also make sure to join the [Gameboy Camer
 ## Optional Step 4: Soldering and adding the OLED Screen
 
 ### 4.1 Soldering
+
+Required tools for this step:
+* Flashed ESP8266 Board
+* Perf-Board
+* Soldering Iron
+
 If you want to have a more permanent setup that you can take with you you can use a Perf-Board and solder the Link Cable wires directly to the corresponding pins.
 
 ### 4.2 OLED Screen
-To check if your wifi-gbp-emulator is in Print or Web mode you cann additionally connect an OLED Screen. Connect it to the following pins:
+
+Required tools for this step:
+* OLED Screen
+* Flashed ESP8266 with modified Gameboy Link Cable either on a Breakout Board or Perf-Board
+* PC with installed Arduino IDE
+
+To check if your wifi-gbp-emulator is in Print or Web mode you can additionally connect an OLED Screen. Connect it to the following pins:
 
 D1 -> Display SCL
 D2 -> Display SDA
@@ -154,7 +187,7 @@ You will also need to modify your config.h and reupload it to your ESP8266. Remo
 Your Link Cable is not connected correctly to the ESP8266. Check your cable connections.
 
 #### Website only shows "REKT"
-You forgot to upload the additional data. Please Check Step 1.3 and 1.4
+You forgot to upload the additional data. Please Check Step 1.4 - 1.6
 
 ### FAQ
 **Q: How many pictures can I save on the ESP8266?**
