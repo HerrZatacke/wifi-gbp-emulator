@@ -65,7 +65,7 @@ void loop() {
 
   #ifdef SENSE_BOOT_MODE
   if (bootMode != digitalRead(GB_5V_OUT)) {
-   ESP.restart();
+    ESP.restart();
   }
   #endif
 }
