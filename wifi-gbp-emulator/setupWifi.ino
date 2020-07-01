@@ -46,6 +46,8 @@ void setupWifi() {
     Serial.println("Could not open conf.json");
   }
 
+  conf.clear();
+
   // Connect to existing WiFi
   if (hasNetworkSettings) {
     Serial.print("Connecting to wifi ");
