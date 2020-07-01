@@ -64,6 +64,7 @@ void getDumpsList() {
 
   String out;
   serializeJson(doc, out);
+  doc.clear();
   server.sendHeader("Access-Control-Allow-Origin", "*");
   server.send(200, "application/json", out);
 }
@@ -103,6 +104,23 @@ void getEnv() {
   serializeJson(doc, out);
   server.sendHeader("Access-Control-Allow-Origin", "*");
   server.send(200, "application/json", out);
+}
+
+void getConfig() {
+  server.sendHeader("Access-Control-Allow-Origin", "*");
+  server.send(200, "application/json", wifiGetConfig());
+}
+
+void setConfig() {
+  server.sendHeader("Access-Control-Allow-Origin", "*");
+
+  // Check if body received
+  if (server.hasArg("plain") == false) {
+    server.send(200, "application/json", JsonErrorResponse("empty request"));
+    return;
+  }
+
+  server.send(200, "application/json", wifiSetConfig(server.arg("plain")));
 }
 
 // stream binary dump data to web-client
@@ -158,6 +176,8 @@ String getContentType(String filename) {
 void webserver_setup() {
   server.on("/dumps/clear", clearDumps);
   server.on("/dumps/list", getDumpsList);
+  server.on("/wificonfig/get", getConfig);
+  server.on("/wificonfig/set", setConfig);
   server.on("/env.json", getEnv);
 
   #ifdef FSTYPE_LITTLEFS
