@@ -68,6 +68,43 @@ void getDumpsList() {
   server.send(200, "application/json", out);
 }
 
+void getEnv() {
+  const size_t capacity = 0x1fff;
+  DynamicJsonDocument doc(capacity);
+
+  doc["version"] = VERSION;
+  doc["maximages"] = MAX_IMAGES;
+
+  #ifdef ESP8266
+  doc["env"] = "esp8266";
+  #else
+  doc["env"] = "unknown";
+  #endif
+
+  #ifdef FSTYPE_LITTLEFS
+  doc["fstype"] = "littlefs";
+  #else
+  doc["fstype"] = "spiffs";
+  #endif
+
+  #ifdef SENSE_BOOT_MODE
+  doc["bootmode"] = "5v-sense";
+  #else
+  doc["bootmode"] = "alternating";
+  #endif
+
+  #ifdef USE_OLED
+  doc["oled"] = true;
+  #else
+  doc["oled"] = false;
+  #endif
+
+  String out;
+  serializeJson(doc, out);
+  server.sendHeader("Access-Control-Allow-Origin", "*");
+  server.send(200, "application/json", out);
+}
+
 // stream binary dump data to web-client
 void handleDump() {
   String path = "/d/" + server.pathArg(0);
@@ -121,6 +158,7 @@ String getContentType(String filename) {
 void webserver_setup() {
   server.on("/dumps/clear", clearDumps);
   server.on("/dumps/list", getDumpsList);
+  server.on("/env.json", getEnv);
 
   #ifdef FSTYPE_LITTLEFS
     server.on(UriBraces("/dumps/{}"), handleDump);
