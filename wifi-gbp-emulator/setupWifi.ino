@@ -1,6 +1,13 @@
 
 ESP8266WiFiMulti wifiMulti;
 
+void createEmptyConfig() {
+  Serial.println("Preparing empty conf.json. \nYou can configure WiFi-Settings via the web interface.");
+  File confFileEmpty = FS.open("/conf.json", "w");
+  confFileEmpty.println("{}");
+  confFileEmpty.close();
+}
+
 void setupWifi() {
   StaticJsonDocument<1023> conf;
   File confFile = FS.open("/conf.json", "r");
@@ -41,9 +48,11 @@ void setupWifi() {
     } else {
       Serial.println("Error parsing conf.json");
       Serial.println(error.c_str());
+      createEmptyConfig();
     }
   } else {
     Serial.println("Could not open conf.json");
+    createEmptyConfig();
   }
 
   conf.clear();
