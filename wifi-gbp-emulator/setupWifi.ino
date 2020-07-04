@@ -18,7 +18,9 @@ void setupWifi() {
 
     if (!error) {
       if (conf.containsKey("mdns")) {
-        mdnsName = String(conf["mdns"].as<String>());
+        if (String(conf["mdns"].as<String>()) != "") {
+          mdnsName = String(conf["mdns"].as<String>());
+        }
       }
 
       if (conf.containsKey("networks")) {
@@ -27,7 +29,7 @@ void setupWifi() {
           const char *ssid = networkSetting["ssid"].as<const char*>();
           const char *password = networkSetting["psk"].as<const char*>();
 
-          if (ssid != "null") {
+          if (ssid != "null" && ssid != "" && password != "") {
             wifiMulti.addAP(ssid, password);
             hasNetworkSettings = true;
           }
@@ -38,7 +40,7 @@ void setupWifi() {
         accesPointSSID = String(conf["ap"]["ssid"].as<String>());
         accesPointPassword = String(conf["ap"]["psk"].as<String>());
 
-        if (accesPointSSID == "null") {
+        if (accesPointSSID == "null" || accesPointSSID == "" || accesPointPassword == "") {
           accesPointSSID = DEFAULT_AP_SSID;
           accesPointPassword = DEFAULT_AP_PSK;
         }
