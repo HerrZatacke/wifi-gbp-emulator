@@ -1,34 +1,35 @@
 # WiFi GBP Emulator
-This repo contains the code to be used on your ESP.  
+A GameBoy printer emulator which provides the received data over a WiFi connection  
+This code has been created for a "LOLIN(WEMOS) D1 R2 & mini" [ESP8266 based board](https://github.com/esp8266/arduino)  
+
 A [detailed beginners guide can be found here](beginner_setup_guide.md)  
+If you are proficient in soldering, there is now a [PCB/Shield to hold the ESP and the optional display](https://github.com/cristofercruz/gbp-esp-shield-pcb)  
 The required (recommended) [gameboy printer web interface can be found on github as well](https://github.com/HerrZatacke/gb-printer-web/)  
-A GameBoy printer emulator which provides the received data over a WiFi connection.  
-This code has been created for a "LOLIN(WEMOS) D1 R2 & mini" [ESP8266 based board](https://github.com/esp8266/arduino).  
-For uploading the Filesystem the LittleFS tool you require the [Arduino IDE Plugin](https://github.com/earlephilhower/arduino-esp8266littlefs-plugin/releases) is required. Follow the installation instructions [here](https://github.com/earlephilhower/arduino-esp8266littlefs-plugin/)  
 
 ## Setup
-Before compiling the project you need to create a `config.h` inside the project folder.  
+Before compiling the project you need to create a `config.h` inside the project folder  
 ([`config.h.sample.txt`](/wifi-gbp-emulator/config.h.sample.txt) should be used as a reference)  
-If you run the default setup (similar to the WiFi-Printer) that file can be left empty.  
-If your (hardware-)setup is different you can adjust the parameters there.  
+For uploading the Filesystem the LittleFS tool you require the [Arduino IDE Plugin](https://github.com/earlephilhower/arduino-esp8266littlefs-plugin/releases) is required. Follow the installation instructions [here](https://github.com/earlephilhower/arduino-esp8266littlefs-plugin/)  
+If you run the default setup (similar to the WiFi-Printer) that file can be left empty  
+If your (hardware-)setup is different you can adjust the parameters there  
 
 ## Bootmode
-The code is designed to check pin `D0` for high to boot in printer mode.  
-Through this it is possible to use the +5v provided by the GameBoy to switch the mode.  
-The default will alternate the bootmode automatically between printer and server on each boot, so you can use the reset-button to switch modes.  
-If you have the possibility to sense the 5V signal, from the GameBoy, you can uncomment `#define SENSE_BOOT_MODE` in your `config.h`.  
+The code is designed to check pin `D0` for high to boot in printer mode  
+Through this it is possible to use the +5v provided by the GameBoy to switch the mode  
+The default will alternate the bootmode automatically between printer and server on each boot, so you can use the reset-button to switch modes  
+If you have the possibility to sense the 5V signal, from the GameBoy, you can uncomment `#define SENSE_BOOT_MODE` in your `config.h`  
 
 ## Configuration
 If the device is not configured the default settings (AP only) will be used
 
 ### Default config
-If not present the ESP will set up an accesspoint with ssid/password `gameboyprinter`.  
-It will output it's IP adress over the serial monitor and on an optionally connected display.  
+If not present the ESP will set up an accesspoint with ssid/password `gameboyprinter`  
+It will output it's IP adress over the serial monitor and on an optionally connected display  
 (usually the device should be accessible via `http://192.168.4.1`)  
-It will also be discoverable via Bonjour/mDNS via `http://gameboyprinter.local`.  
+It will also be discoverable via Bonjour/mDNS via `http://gameboyprinter.local`  
 
 ### Manual Setup via `conf.json`
-Wifi setup can be done via a file `conf.json` in the `/data/` folder.  
+Wifi setup can be done via a file `conf.json` in the `/data/` folder  
 The basic format are as follows:
 ```` json
 {
@@ -56,9 +57,9 @@ AccessPoint config
 Enter ssid/psk to open an accesspoint different to the default one.
 
 #### `"networks"`
-Array of objects with keys ssid/psk.  
-The first reachable network in that list will be used to conect to.  
-⚠ Do not use more than 10 elements. Otherwise you might see an "Out of Memory" error in the serial monitor.  
+Array of objects with keys ssid/psk  
+The first reachable network in that list will be used to conect to  
+⚠ Do not use more than 10 elements. Otherwise you might see an "Out of Memory" error in the serial monitor  
 
 ### Manual Setup via web interface
 The following will describe the "raw" interface for updating ther configuration. You will only need this if you decide not to use the existing web-interface
@@ -77,7 +78,7 @@ make sure to send the data as a JSON string in the POST-Body
 * If the update for a network contains a `psk` it will be updated otherwise left untouched
 
 ## Automatic update of the webserver content
-* You can run [`update_w.ps1`](./update_w.ps1) (windows-powershell) or [`update_w.sh`](./update_w.sh) (bash) to download the latest release of the [gb-printer-web](https://github.com/HerrZatacke/gb-printer-web/releases/) and automatically unzip it to the correct folder.  
+* You can run [`update_w.ps1`](./update_w.ps1) (windows-powershell) or [`update_w.sh`](./update_w.sh) (bash) to download the latest release of the [gb-printer-web](https://github.com/HerrZatacke/gb-printer-web/releases/) and automatically unzip it to the correct folder  
 * After doing so upload the content of that folder to the ESP via the [arduino-esp8266fs-plugin](https://github.com/esp8266/arduino-esp8266fs-plugin/releases/) in the Arduino IDE.
 
 ## Hardware Setup
@@ -119,6 +120,6 @@ The display will show the current wifi-config while in server mode, as well as t
 ## Demo Video
 ~~An earlier version of this code did stream the received image-data to a browser via websockets. This is shown in [this older video](https://www.youtube.com/watch?v=HHPHkeio85U).~~    
 ### ⚠ Take care ⚠
-You should not power the ESP from the GameBoy, as this might damage the GameBoy itself. What you see in the video was meant as a proof of concept which is basically not implemented anymore.  
+You should not power the ESP from the GameBoy, as this might damage the GameBoy itself. What you see in the video was meant as a proof of concept which is basically not implemented anymore  
 
 
