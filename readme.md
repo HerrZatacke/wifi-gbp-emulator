@@ -7,9 +7,9 @@ If you are proficient in soldering, there is now a [PCB/Shield to hold the ESP a
 The required (recommended) [gameboy printer web interface can be found on github as well](https://github.com/HerrZatacke/gb-printer-web/)  
 
 ## Setup
+For uploading the Filesystem to the ESP you require the [SPIFFS Arduino IDE Plugin](https://github.com/esp8266/arduino-esp8266fs-plugin/releases). Follow the installation instructions [here](https://github.com/earlephilhower/arduino-esp8266fs-plugin/)  
 Before compiling the project you need to create a `config.h` inside the project folder  
 ([`config.h.sample.txt`](/wifi-gbp-emulator/config.h.sample.txt) should be used as a reference)  
-For uploading the Filesystem to the ESP you require the [SPIFFS Arduino IDE Plugin](https://github.com/esp8266/arduino-esp8266fs-plugin/releases). Follow the installation instructions [here](https://github.com/earlephilhower/arduino-esp8266fs-plugin/)  
 If you run the default setup (similar to the WiFi-Printer) that file can be left empty  
 If your (hardware-)setup is different you can adjust the parameters there  
 
