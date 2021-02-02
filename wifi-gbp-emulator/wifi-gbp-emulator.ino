@@ -1,6 +1,6 @@
 #include "wifi-gbp-emulator.h"
 
-#define VERSION "0.3.1"
+#define VERSION "0.3.2"
 
 // Variables used across multiple files, so they need to be defined here
 String mdnsName = DEFAULT_MDNS_NAME;
@@ -10,7 +10,7 @@ bool hasNetworkSettings = false;
 bool bootMode;
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(38400);
   Serial.println("\n\n\n\n");
 
   #ifdef USE_OLED

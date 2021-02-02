@@ -130,7 +130,7 @@ void handleDump() {
   if(FS.exists(path)) {
     File file = FS.open(path, "r");
     server.sendHeader("Access-Control-Allow-Origin", "*");
-    size_t sent = server.streamFile(file, "text/plain");
+    size_t sent = server.streamFile(file, "application/octet-stream");
     file.close();
   }
 
