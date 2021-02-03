@@ -1,6 +1,6 @@
 #include "wifi-gbp-emulator.h"
 
-#define VERSION "0.3.2"
+#define VERSION "0.3.3"
 
 // Variables used across multiple files, so they need to be defined here
 String mdnsName = DEFAULT_MDNS_NAME;
@@ -31,8 +31,9 @@ void setup() {
   bootMode = fs_alternateBootMode();
   #endif
 
+  Serial.println((String)"\n\nv" + VERSION);
   if (bootMode == MODE_PRINT) {
-    Serial.println("\n\n-----------------------");
+    Serial.println("-----------------------");
     Serial.println("Booting in printer mode");
     Serial.println("-----------------------\n");
     digitalWrite(LED_BLINK_PIN, false);
@@ -42,7 +43,7 @@ void setup() {
     showPrinterStats();
     #endif
   } else {
-    Serial.println("\n\n-----------------------");
+    Serial.println("-----------------------");
     Serial.println("Booting in server mode");
     Serial.println("-----------------------\n");
     digitalWrite(LED_BLINK_PIN, true);

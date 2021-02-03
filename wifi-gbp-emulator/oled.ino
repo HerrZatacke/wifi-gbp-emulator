@@ -84,7 +84,7 @@ void oled_setup() {
     for(;;); // Don't proceed, loop forever
   }
 
-  oled_msg("Booting...");
+  oled_msg((String)" v" + VERSION + (String)"\n Booting...");
 }
 
 void oled_msg(String message) {
