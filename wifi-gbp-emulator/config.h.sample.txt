@@ -18,6 +18,8 @@
 // #define OLED_SCL 4
 // you can invert the display to easily spot the actual dimensions
 // #define OLED_INVERT
+// You can rotate the display by 180°
+// #define OLED_ROTATE
 
 // You can override the defaults for AccesPoint SSIF/PASS/MDNSNAME
 // All those parameters can be configured within /data/conf.json

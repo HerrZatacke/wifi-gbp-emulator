@@ -84,6 +84,10 @@ void oled_setup() {
     for(;;); // Don't proceed, loop forever
   }
 
+  #ifdef OLED_ROTATE
+  display.setRotation(2);
+  #endif
+
   oled_msg((String)" v" + VERSION + (String)"\n Booting...");
 }
 
