@@ -110,6 +110,7 @@ Enhance performance while saving (maybe by constantly writing all data to a sing
 * ESP8266 D1 Mini [Pinout](https://escapequotes.net/esp8266-wemos-d1-mini-pins-and-diagram/)
 * SPIFFS/LittleFS [Filesystem Docs](https://arduino-esp8266.readthedocs.io/en/latest/filesystem.html)
 * [Link cable breakout board](https://github.com/Palmr/gb-link-cable)
+* [Lots of helpful GameBoy and GameBoy Camera resources](https://github.com/gbdev/awesome-gbdev)
 
 ## OLED Display
 You can add a [tiny oled display like this](https://www.amazon.de/gp/product/B07BDFXFRK) or [(probably) this](https://de.aliexpress.com/item/32672229793.html)   
