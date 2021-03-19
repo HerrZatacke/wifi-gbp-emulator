@@ -2,11 +2,11 @@
 A GameBoy printer emulator which provides the received data over a WiFi connection  
 This code has been created for a "LOLIN(WEMOS) D1 R2 & mini" [ESP8266 based board](https://github.com/esp8266/arduino)  
 
-A [detailed beginners guide can be found here](beginner_setup_guide.md)  
 If you are proficient in soldering, there is now a [PCB/Shield to hold the ESP and the optional display](https://github.com/cristofercruz/gbp-esp-shield-pcb)  
 The required (recommended) [gameboy printer web interface can be found on github as well](https://github.com/HerrZatacke/gb-printer-web/)  
 
 ## Setup
+It's a good idea to follow the [detailed beginners guide](beginner_setup_guide.md)  
 For uploading the Filesystem to the ESP you require the [SPIFFS Arduino IDE Plugin](https://github.com/esp8266/arduino-esp8266fs-plugin/releases). Follow the installation instructions [here](https://github.com/earlephilhower/arduino-esp8266fs-plugin/)  
 Before compiling the project you need to create a `config.h` inside the project folder  
 ([`config.h.sample.txt`](/wifi-gbp-emulator/config.h.sample.txt) should be used as a reference)  
