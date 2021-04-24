@@ -55,7 +55,8 @@ Go to ``` Tools -> Manage Libraries``` and search in the filter mask for Arduino
 
 Download the latest version of the ```arduino-esp8266fs-plugin``` from [here](https://github.com/esp8266/arduino-esp8266fs-plugin/releases/)
 
-In the Arduino IDE navigate to ```File -> Preferences``` and check for your ```Sketchbook location``` path. Navigate to that path in your file browser. If needed create the folder ```tools``` and extract the ```esp8266fs.jar``` into that folder.
+In the Arduino IDE navigate to ```File -> Preferences``` and check for your ```Sketchbook location``` path. Navigate to that path in your file browser. 
+Create a ```tools``` folder if there is not already one. Extract the contents of the archive into the ```tools``` folder, including all the intermediate folders. If done correctly, there should be a ```tools\ESP8266FS\tool\esp8266fs.jar``` file in your Arduino folder.
 
 Restart the Arduino IDE after that.
 
@@ -190,6 +191,9 @@ Your Link Cable is not connected correctly to the ESP8266. Check your cable conn
 
 #### Website only shows "REKT"
 You forgot to upload the additional data. Please Check Step 1.4 - 1.6
+
+#### PermissionError "Access is Denied" while uploading sketch
+The `arduino-esp8266fs-plugin` tool is not installed in the proper path. Please check Step 1.4.
 
 ### FAQ
 **Q: How many pictures can I save on the ESP8266?**
