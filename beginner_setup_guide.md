@@ -45,9 +45,11 @@ Confirm with "OK" and navigate to ```Tools -> Board -> Board Manager```. In the 
 
 Lastly navigate to ```Tools -> Board``` and select your EPS8266 module
 
-### 1.3 Install ArduinoJson Library
+### 1.3 Install Arduino Libraries
 
 Go to ``` Tools -> Manage Libraries``` and search in the filter mask for ArduinoJSON. Additional installation procedures can be found [here](https://arduinojson.org/v6/doc/installation/)
+
+*Optionally,* if you are using an OLED display, use ``` Tools -> Manage Libraries ``` to search for and install the "Adafruit SSD1306" library.
 
 ### 1.4 Install arduino-esp8266fs-plugin
 
@@ -76,7 +78,7 @@ Type ```./update_w.sh```
 
 Connect your ESP8266 Board via USB to your PC. Navigate to ```File -> Open ...``` navigate to the folder you unzipped in the previous step. Open the ```wifi-gbp-emulator.ino``` 
 
-To confirm that the code was downloaded correctly navigate to ```Sketch -> Verify/Compile```. If everything works go to ```Sketch -> Upload``` and wait until the upload is finished.  
+To confirm that the code was downloaded correctly navigate to ```Sketch -> Verify/Compile```. Ensure at this point that the correct board is selected in ``` Tools -> Board ```. If everything works go to ```Sketch -> Upload``` and wait until the upload is finished.
 
 Now nagivate to ```Tools -> ESP8266 Sketch Data Upload``` and wait until its finished.
 
