@@ -189,7 +189,7 @@ You will also need to modify your config.h and reupload it to your ESP8266. Remo
 #### Printer Error #2
 Your Link Cable is not connected correctly to the ESP8266. Check your cable connections.
 
-#### Website only shows "REKT"
+#### Website only shows a 404 Error
 You forgot to upload the additional data. Please Check Step 1.4 - 1.6
 
 #### PermissionError "Access is Denied" while uploading sketch

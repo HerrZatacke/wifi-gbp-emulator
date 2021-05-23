@@ -1,6 +1,11 @@
 
 ESP8266WebServer server(80);
 
+void send404() {
+  server.sendHeader("Access-Control-Allow-Origin", "*");
+  server.send(404, "text/html", "<html><body><h1>404 - Not Found</h1><p>You probably forgot to upload the additional data.</p><br><a href=\"https://github.com/HerrZatacke/wifi-gbp-emulator/blob/master/beginner_setup_guide.md#14-install-arduino-esp8266fs-plugin\">Please Check Step 1.4 - 1.6</a></body></html>");
+}
+
 // delete all stored dumps
 void clearDumps() {
   Dir dumpDir = FS.openDir("/d/");
@@ -134,8 +139,7 @@ void handleDump() {
     file.close();
   }
 
-  server.sendHeader("Access-Control-Allow-Origin", "*");
-  server.send(404, "text/plain", "REKT");
+  send404();
 }
 
 bool handleFileRead(String path) {
@@ -188,8 +192,7 @@ void webserver_setup() {
 
   server.onNotFound([]() {
     if (!handleFileRead(server.uri())) {
-      server.sendHeader("Access-Control-Allow-Origin", "*");
-      server.send(404, "text/plain", "REKT");
+      send404();
     }
   });
   server.begin();
