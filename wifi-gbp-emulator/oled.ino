@@ -88,7 +88,19 @@ void oled_setup() {
   display.setRotation(2);
   #endif
 
-  oled_msg((String)" v" + VERSION + (String)"\n Booting...");
+  bool bootMode;
+
+  #ifdef SENSE_BOOT_MODE
+  bootMode = digitalRead(GB_5V_OUT);
+  #else
+  bootMode = fs_alternateBootMode();
+  #endif
+
+  if (bootMode == MODE_PRINT) {
+    oled_msg((String)" v" + VERSION + (String)"\n Booting printer...");
+  } else {
+    oled_msg((String)" v" + VERSION + (String)"\n Booting server...");
+  }
 }
 
 void oled_msg(String message) {
