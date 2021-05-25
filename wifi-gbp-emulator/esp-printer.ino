@@ -1,110 +1,65 @@
-void processByte(byte data);
-void storeData(byte *image_data);
+#include <stdint.h> // uint8_t
+#include <stddef.h> // size_t
+
+#include "gameboy_printer_protocol.h"
+#include "gbp_serial_io.h"
+
 unsigned int nextFreeFileIndex();
-
-byte clock_count = 0x00;
-byte current_byte = 0x00;
-uint32_t packet_count = 0x00;
-uint32_t packet_length = 0x00;
-byte current_packet_type = 0x00;
-bool printed = false;
-byte inquiry_count = 0x00;
-byte image_data[11520] = {};
-uint32_t img_index = 0;
-
-unsigned long lastByteReceived = 0;
-unsigned long blinkClockHit = 0;
-bool blinkCycle = false;
-
 unsigned int freeFileIndex = 0;
 
-void ICACHE_RAM_ATTR gbClockHit() {
-  if (digitalRead(GB_MOSI) == HIGH) {
-    current_byte |= 0x01;
-  }
+String cmdPRNT="";
+int chkHeader=99;
 
-  if (packet_count == (packet_length - 3)) {
-    if (clock_count == 7) {
-      digitalWrite(GB_MISO, HIGH);
-    }
-  }
-  if (packet_count == (packet_length - 2)) {
-    if (clock_count == 0 || clock_count == 7) {
-      digitalWrite(GB_MISO, LOW);
-    } else if (clock_count == 6) {
-      digitalWrite(GB_MISO, HIGH);
-    }
-  }
+byte image_data[30000] = {};
+uint32_t img_index=0x00;
 
-  if (clock_count == 0) {
-    // Blink while receiving data
-    lastByteReceived = millis();
-    if (blinkClockHit < lastByteReceived) {
-      blinkClockHit = lastByteReceived + 50;
-      blinkCycle = !blinkCycle;
-      digitalWrite(LED_BLINK_PIN, blinkCycle);
-    }
-  }
+// Dev Note: Gamboy camera sends data payload of 640 bytes usually
+#define GBP_BUFFER_SIZE 650
 
-  if (clock_count == 7) {
-    processByte(current_byte);
-    clock_count = 0;
-    current_byte = 0x00;
-  } else {
-    current_byte = current_byte << 1;
-    clock_count++;
+/* Serial IO */
+// This circular buffer contains a stream of raw packets from the gameboy
+uint8_t gbp_serialIO_raw_buffer[GBP_BUFFER_SIZE] = {0};
+
+inline void gbp_packet_capture_loop();
+
+/*******************************************************************************
+  Utility Functions
+*******************************************************************************/
+
+const char *gbpCommand_toStr(int val) {
+  switch (val) {
+    case GBP_COMMAND_INIT    : return "INIT";
+    case GBP_COMMAND_PRINT   : return "PRNT";
+    case GBP_COMMAND_DATA    : return "DATA";
+    case GBP_COMMAND_BREAK   : return "BREK";
+    case GBP_COMMAND_INQUIRY : return "INQY";
+    default: return "?";
   }
 }
 
-void processByte(byte data) {
-  if (packet_count == 2) { //command type
-    current_packet_type = data;
-    switch (data) {
-      case 0x04:
-      packet_length = 0x28A; // 650 bytes
-      break;
+/*******************************************************************************
+  Interrupt Service Routine
+*******************************************************************************/
 
-      case 0x02:
-      packet_length = 0x0E; // 14 bytes
-      break;
-
-      default:
-      packet_length = 0x0A; // 10 bytes
-      break;
-    }
-  }
-
-  // Handles that special empty body data packet
-  if ((current_packet_type == 0x04) && (packet_count == 4) && (data == 0x00)) {
-    packet_length = 0x0A;
-  }
-
-  if ((current_packet_type == 0x04) && (packet_count >= 6) && (packet_count <= packet_length - 5)) {
-    image_data[img_index++] = data;
-  }
-
-  if (current_packet_type == 0x02) {
-    printed = true;
-  }
-
-  if (printed && (packet_count == 2) && (data == 0x0F)) {
-    inquiry_count++;
-  }
-
-  if (packet_count == (packet_length - 1)) {
-    packet_count = 0x00;
-    if (inquiry_count == 4) {
-      storeData(image_data);
-    }
-  } else {
-    packet_count++;
-  }
+#ifdef ESP8266
+void ICACHE_RAM_ATTR serialClock_ISR(void)
+#else
+void serialClock_ISR(void)
+#endif
+{
+  // Serial Clock (1 = Rising Edge) (0 = Falling Edge); Master Output Slave Input (This device is slave)
+#ifdef GBP_FEATURE_USING_RISING_CLOCK_ONLY_ISR
+  const bool txBit = gpb_serial_io_OnRising_ISR(digitalRead(GB_MOSI));
+#else
+  const bool txBit = gpb_serial_io_OnChange_ISR(digitalRead(GB_SCLK), digitalRead(GB_MOSI));
+#endif
+  digitalWrite(GB_MISO, txBit ? HIGH : LOW);
 }
 
 unsigned int nextFreeFileIndex() {
   for (int i = 1; i < MAX_IMAGES; i++) {
     char path[31];
-    sprintf(path, "/d/%05d.bin", i);
+    sprintf(path, "/d/%05d.txt", i);
     if (!FS.exists(path)) {
       return i;
     }
@@ -113,16 +68,17 @@ unsigned int nextFreeFileIndex() {
 }
 
 void resetValues() {
-  clock_count = 0x00;
-  current_byte = 0x00;
-  packet_count = 0x00;
-  packet_length = 0x00;
-  current_packet_type = 0x00;
-  printed = false;
-  inquiry_count = 0x00;
   img_index = 0x00;
 
-  lastByteReceived = 0;
+  /* Attach ISR Again*/
+  #ifdef GBP_FEATURE_USING_RISING_CLOCK_ONLY_ISR
+    attachInterrupt( digitalPinToInterrupt(GB_SCLK), serialClock_ISR, RISING);  // attach interrupt handler
+  #else
+    attachInterrupt( digitalPinToInterrupt(GB_SCLK), serialClock_ISR, CHANGE);  // attach interrupt handler
+  #endif
+
+  memset(image_data, 0x00, sizeof(image_data));
+  showPrinterStats();
 
   // Turn LED ON
   digitalWrite(LED_BLINK_PIN, false);
@@ -130,11 +86,14 @@ void resetValues() {
 }
 
 void storeData(byte *image_data) {
-  detachInterrupt(GB_SCLK);
+  detachInterrupt(digitalPinToInterrupt(GB_SCLK));
 
   unsigned long perf = millis();
   char fileName[31];
-  sprintf(fileName, "/d/%05d.bin", freeFileIndex);
+  oled_msg("Saving...");
+  sprintf(fileName, "/d/%05d.txt", freeFileIndex);
+
+  digitalWrite(LED_BLINK_PIN, LOW);
 
   File file = FS.open(fileName, "w");
 
@@ -142,18 +101,21 @@ void storeData(byte *image_data) {
     Serial.println("file creation failed");
   }
 
-  file.write("GB-BIN01", 8);
+  // for (int i = 0 ; i < img_index ; i++){
+  //   file.print((char)image_data[i]);
+  // }
   file.write(image_data, img_index);
   file.close();
 
   perf = millis() - perf;
-  Serial.printf("File /d/%05d.bin written in %lums\n", freeFileIndex, perf);
+  Serial.printf("File /d/%05d.txt written in %lums\n", freeFileIndex, perf);
 
   freeFileIndex++;
 
-  if (freeFileIndex <= MAX_IMAGES) {
+  // ToDo: Handle percentages
+  int percUsed = fs_info();
+  if (percUsed > 5) {
     resetValues();
-    attachInterrupt(GB_SCLK, gbClockHit, RISING);
   } else {
     Serial.println("no more space on printer\nrebooting...");
     ESP.restart();
@@ -177,40 +139,120 @@ void espprinter_setup() {
   pinMode(GB_MOSI, INPUT);
   pinMode(GB_SCLK, INPUT);
 
+  /* Default link serial out pin state */
+  digitalWrite(GB_MISO, LOW);
+
   freeFileIndex = nextFreeFileIndex();
 
   if (freeFileIndex <= MAX_IMAGES) {
-    Serial.printf("Next file: /d/%05d.bin\n", freeFileIndex);
+    Serial.printf("Next file: /d/%05d.txt\n", freeFileIndex);
   } else {
     full();
   }
 
-  resetValues();
+  /* Setup */
+  gpb_serial_io_init(sizeof(gbp_serialIO_raw_buffer), gbp_serialIO_raw_buffer);
 
-  // Setup Clock Interrupt
-  attachInterrupt(GB_SCLK, gbClockHit, RISING);
+  /* Attach ISR */
+  #ifdef GBP_FEATURE_USING_RISING_CLOCK_ONLY_ISR
+  attachInterrupt( digitalPinToInterrupt(GB_SCLK), serialClock_ISR, RISING);  // attach interrupt handler
+  #else
+  attachInterrupt( digitalPinToInterrupt(GB_SCLK), serialClock_ISR, CHANGE);  // attach interrupt handler
+  #endif
 }
 
 
 #ifdef USE_OLED
 void showPrinterStats() {
   char printed[20];
-  char remain[20];
-  sprintf(printed, "%3d printed", freeFileIndex - 1);
-  sprintf(remain, "%3d remaining", MAX_IMAGES + 1 - freeFileIndex);
-  oled_msg(
-    printed,
-    remain
-  );
+  int percUsed = fs_info();
+  sprintf(printed, "%3d files", freeFileIndex - 1);
+  oled_msg(((String)percUsed)+((char)'%')+" remaining",printed);
   oled_drawLogo();
 }
 #endif
 
-void espprinter_loop() {
-  if (lastByteReceived != 0 && lastByteReceived + 500 < millis()) {
-    resetValues();
-    #ifdef USE_OLED
-    showPrinterStats();
-    #endif
+inline void gbp_packet_capture_loop() {
+  /* tiles received */
+  static uint32_t byteTotal = 0;
+  static uint32_t pktTotalCount = 0;
+  static uint32_t pktByteIndex = 0;
+  static uint16_t pktDataLength = 0;
+  const size_t dataBuffCount = gbp_serial_io_dataBuff_getByteCount();
+  if (
+    ((pktByteIndex != 0) && (dataBuffCount > 0)) ||
+    ((pktByteIndex == 0) && (dataBuffCount >= 6))
+  ) {
+    const char nibbleToCharLUT[] = "0123456789ABCDEF";
+    uint8_t data_8bit = 0;
+
+    // Display the data payload encoded in hex
+    for (int i = 0 ; i < dataBuffCount ; i++) {
+      // Start of a new packet
+      if (pktByteIndex == 0) {
+        pktDataLength = gbp_serial_io_dataBuff_getByte_Peek(4);
+        pktDataLength |= (gbp_serial_io_dataBuff_getByte_Peek(5)<<8)&0xFF00;
+        chkHeader = gbp_serial_io_dataBuff_getByte_Peek(2);
+
+        if (chkHeader == 1) {
+          oled_msg("Receiving data...");
+        }
+
+        digitalWrite(LED_BLINK_PIN, HIGH);
+      }
+
+      // Print Hex Byte
+      data_8bit = gbp_serial_io_dataBuff_getByte();
+
+      if (chkHeader == 2) {
+        image_data[img_index] = (byte)data_8bit;
+        img_index++;
+
+        cmdPRNT = cmdPRNT+((char)nibbleToCharLUT[(data_8bit>>4)&0xF]) + ((char)nibbleToCharLUT[(data_8bit>>0)&0xF]);
+        //Serial.print((String)data_8bit);
+      } else if (chkHeader == 1 || (chkHeader == 4 && pktDataLength > 9)) {
+        image_data[img_index] = (byte)data_8bit;
+        img_index++;
+        //Serial.print((char)nibbleToCharLUT[(data_8bit>>4)&0xF]);
+        //Serial.print((char)nibbleToCharLUT[(data_8bit>>0)&0xF]);
+      }
+
+      // Splitting packets for convenience
+      if ((pktByteIndex > 5) && (pktByteIndex >= (9 + pktDataLength))) {
+        digitalWrite(LED_BLINK_PIN, LOW);
+        if (cmdPRNT.length() == 28) {
+          if (((int)(cmdPRNT[15]-'0')) >= 1) {
+            storeData(image_data);
+            chkHeader = 99;
+          }
+          cmdPRNT = "";
+        }
+        //Serial.println("");
+        pktByteIndex = 0;
+        pktTotalCount++;
+      } else {
+        //Serial.print((char)' ');
+        pktByteIndex++; // Byte hex split counter
+        byteTotal++; // Byte total counter
+      }
+    }
   }
+}
+
+void espprinter_loop() {
+  static uint16_t sioWaterline = 0;
+
+  gbp_packet_capture_loop();
+
+  // Trigger Timeout and reset the printer if byte stopped being received.
+  static uint32_t last_millis = 0;
+  uint32_t curr_millis = millis();
+  if (curr_millis > last_millis) {
+    uint32_t elapsed_ms = curr_millis - last_millis;
+    if (gbp_serial_io_timeout_handler(elapsed_ms)) {
+      digitalWrite(LED_BLINK_PIN, LOW);
+    }
+  }
+
+  last_millis = curr_millis;
 }
