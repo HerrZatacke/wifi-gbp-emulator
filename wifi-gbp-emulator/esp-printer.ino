@@ -125,6 +125,11 @@ void storeData(byte *image_data) {
 // Blink if printer is full.
 void full() {
   Serial.println("no more space on printer");
+
+  #ifdef USE_OLED
+  oled_msg((String)"Printer is full :-(");
+  #endif
+
   while(true) {
     digitalWrite(LED_BLINK_PIN, LOW);
     delay(1000);
