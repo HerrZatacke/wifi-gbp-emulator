@@ -1,6 +1,8 @@
 
 ESP8266WebServer server(80);
 
+#define DUMP_CHUNK_SIZE 90
+
 void send404() {
   server.sendHeader("Access-Control-Allow-Origin", "*");
   server.send(404, "text/html", "<html><body><h1>404 - Not Found</h1><p>You probably forgot to upload the additional data.</p><br><a href=\"https://github.com/HerrZatacke/wifi-gbp-emulator/blob/master/beginner_setup_guide.md#14-install-arduino-esp8266fs-plugin\">Please Check Step 1.4 - 1.6</a></body></html>");
@@ -43,70 +45,63 @@ void getDumpsList() {
 
   // get number of files in /d/
   unsigned int dumpcount = 0;
-  while(dumpDir.next()) {
-    dumpcount++;
-  }
-  dumpDir.rewind();
-
-  const size_t capacity = 0x1fff;
-  DynamicJsonDocument doc(capacity);
-  JsonArray dumps = doc.createNestedArray("dumps");
-  JsonObject fs = doc.createNestedObject("fs");
-
-  fs["total"] = total;
-  fs["used"] = used;
-  fs["available"] = avail;
-  fs["maximages"] = MAX_IMAGES;
-  fs["dumpcount"] = dumpcount;
-
-  while(dumpDir.next()) {
-    #ifdef FSTYPE_LITTLEFS
-      dumps.add("/dumps/" + dumpDir.fileName());
-    #else
-      dumps.add("/dumps" + dumpDir.fileName());
-    #endif
-  }
 
   String out;
-  serializeJson(doc, out);
-  doc.clear();
+  String dumpList;
+  bool sep = false;
+
+  while(dumpDir.next()) {
+    dumpcount++;
+    if (sep) {
+      dumpList += ",";
+    } else {
+      sep = true;
+    }
+    dumpList += "\"";
+    #ifdef FSTYPE_LITTLEFS
+      dumpList += "/dumps/";
+    #else
+      dumpList += "/dumps" ;
+    #endif
+    dumpList += dumpDir.fileName();
+    dumpList += "\"";
+  }
+
+  char fs[100];
+  sprintf(fs, "{\"total\":%d,\"used\":%d,\"available\":%d,\"maximages\":%d,\"dumpcount\":%d}", total, used, avail, MAX_IMAGES, dumpcount);
+
   server.sendHeader("Access-Control-Allow-Origin", "*");
-  server.send(200, "application/json", out);
+  server.send(200, "application/json", "{\"fs\":" + String(fs) + ",\"dumps\":[" + dumpList + "]}");
 }
 
 void getEnv() {
-  const size_t capacity = 0x1fff;
-  DynamicJsonDocument doc(capacity);
+  char out[127];
 
-  doc["version"] = VERSION;
-  doc["maximages"] = MAX_IMAGES;
+  sprintf(out, "{\"version\":\"%s\",\"maximages\":%d,\"env\":\"%s\",\"fstype\":\"%s\",\"bootmode\":\"%s\",\"oled\":%s}",
+    VERSION,
+    MAX_IMAGES,
+#ifdef ESP8266
+    "esp8266",
+#else
+    "unknown",
+#endif
+#ifdef FSTYPE_LITTLEFS
+    "littlefs",
+#else
+    "spiffs",
+#endif
+#ifdef SENSE_BOOT_MODE
+    "5v-sense",
+#else
+    "alternating",
+#endif
+#ifdef USE_OLED
+    "true"
+#else
+    "false"
+#endif
+  );
 
-  #ifdef ESP8266
-  doc["env"] = "esp8266";
-  #else
-  doc["env"] = "unknown";
-  #endif
-
-  #ifdef FSTYPE_LITTLEFS
-  doc["fstype"] = "littlefs";
-  #else
-  doc["fstype"] = "spiffs";
-  #endif
-
-  #ifdef SENSE_BOOT_MODE
-  doc["bootmode"] = "5v-sense";
-  #else
-  doc["bootmode"] = "alternating";
-  #endif
-
-  #ifdef USE_OLED
-  doc["oled"] = true;
-  #else
-  doc["oled"] = false;
-  #endif
-
-  String out;
-  serializeJson(doc, out);
   server.sendHeader("Access-Control-Allow-Origin", "*");
   server.send(200, "application/json", out);
 }
@@ -135,8 +130,35 @@ void handleDump() {
   if(FS.exists(path)) {
     File file = FS.open(path, "r");
     server.sendHeader("Access-Control-Allow-Origin", "*");
-    size_t sent = server.streamFile(file, "application/octet-stream");
+
+    server.setContentLength(file.available() * 3);
+    server.send(200, "text/plain");
+
+    Serial.println(file.available());
+    Serial.println(file.available() * 3);
+
+    const char nibbleToCharLUT[] = "0123456789ABCDEF";
+
+    char converted[DUMP_CHUNK_SIZE];
+    uint8_t index = 0;
+
+    while (file.available()) {
+      char c = file.read();
+
+      converted[index] = nibbleToCharLUT[(c>>4)&0xF];
+      converted[index + 1] = nibbleToCharLUT[(c>>0)&0xF];
+      converted[index + 2] = ' ';
+      index += 3;
+
+      if (index >= DUMP_CHUNK_SIZE || file.available() == 0) {
+        Serial.println(index + 3);
+        server.sendContent(converted, index);
+        index = 0;
+      }
+    }
+
     file.close();
+    return;
   }
 
   send404();
