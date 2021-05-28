@@ -31,6 +31,17 @@ void setup() {
   bootMode = fs_alternateBootMode();
   #endif
 
+
+  // ToDo: boot into server mode if printer is full?
+  // freeFileIndex = nextFreeFileIndex();
+  //
+  // if (freeFileIndex <= MAX_IMAGES) {
+  //   Serial.printf("Next file: /d/%05d.txt\n", freeFileIndex);
+  // } else {
+  //   full();
+  // }
+
+
   Serial.println((String)"\n\nv" + VERSION);
   if (bootMode == MODE_PRINT) {
     Serial.println("-----------------------");
