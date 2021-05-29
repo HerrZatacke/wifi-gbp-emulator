@@ -6,8 +6,7 @@ Installing the newest version of the web-app will remove all images stored on yo
 Continue?', 'Confirmation', 'YesNo');
 
 if ($continue -eq 'Yes') {
-  if (Test-Path ./wifi-gbp-emulator/data/w)
-  {
+  if (Test-Path ./wifi-gbp-emulator/data/w) {
     Remove-Item ./wifi-gbp-emulator/data/w -Recurse -Force -Confirm:$false
   }
   Invoke-WebRequest -Uri https://github.com/HerrZatacke/gb-printer-web/releases/latest/download/data_w.zip -OutFile ./data_w.zip
