@@ -134,9 +134,6 @@ void handleDump() {
     server.setContentLength(file.available() * 3);
     server.send(200, "text/plain");
 
-    Serial.println(file.available());
-    Serial.println(file.available() * 3);
-
     const char nibbleToCharLUT[] = "0123456789ABCDEF";
 
     char converted[DUMP_CHUNK_SIZE];
@@ -151,7 +148,6 @@ void handleDump() {
       index += 3;
 
       if (index >= DUMP_CHUNK_SIZE || file.available() == 0) {
-        Serial.println(index + 3);
         server.sendContent(converted, index);
         index = 0;
       }
