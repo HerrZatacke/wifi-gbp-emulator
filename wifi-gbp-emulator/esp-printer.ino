@@ -6,6 +6,9 @@
 
 unsigned int nextFreeFileIndex();
 unsigned int freeFileIndex = 0;
+File file;
+uint32_t writeFrom = 0x00;
+uint32_t writeTo = 0x00;
 
 String cmdPRNT="";
 int chkHeader=99;
@@ -69,56 +72,57 @@ unsigned int nextFreeFileIndex() {
 
 void resetValues() {
   img_index = 0x00;
+  writeFrom = 0x00;
+  writeTo = 0x00;
 
-  /* Attach ISR Again*/
-  #ifdef GBP_FEATURE_USING_RISING_CLOCK_ONLY_ISR
-    attachInterrupt( digitalPinToInterrupt(GB_SCLK), serialClock_ISR, RISING);  // attach interrupt handler
-  #else
-    attachInterrupt( digitalPinToInterrupt(GB_SCLK), serialClock_ISR, CHANGE);  // attach interrupt handler
-  #endif
+  file.close();
+
+  // ToDo: Handle percentages
+  //int percUsed = fs_info();
+  // if (percUsed > 5) {
+  //   resetValues();
+  // } else {
+  //   Serial.println("no more space on printer\nrebooting...");
+  //   ESP.restart();
+  // }
+
+  // /* Attach ISR Again*/
+  // #ifdef GBP_FEATURE_USING_RISING_CLOCK_ONLY_ISR
+  //   attachInterrupt( digitalPinToInterrupt(GB_SCLK), serialClock_ISR, RISING);  // attach interrupt handler
+  // #else
+  //   attachInterrupt( digitalPinToInterrupt(GB_SCLK), serialClock_ISR, CHANGE);  // attach interrupt handler
+  // #endif
+
+  Serial.println("a");
 
   memset(image_data, 0x00, sizeof(image_data));
+  Serial.println("b");
+  #ifdef USE_OLED
   showPrinterStats();
+  #endif
+  Serial.println("c");
 
   // Turn LED ON
   digitalWrite(LED_BLINK_PIN, false);
+  Serial.println("d");
   Serial.println("Printer ready.");
+  Serial.println("e");
 }
 
-void storeData(byte *image_data) {
-  detachInterrupt(digitalPinToInterrupt(GB_SCLK));
+void createNextFile() {
+  if (file) {
+    file.close();
+    Serial.printf("File /d/%05d.txt closed\n", freeFileIndex);
+    freeFileIndex++;
+  }
 
-  unsigned long perf = millis();
   char fileName[31];
-  oled_msg("Saving...");
   sprintf(fileName, "/d/%05d.txt", freeFileIndex);
-
-  digitalWrite(LED_BLINK_PIN, LOW);
-
-  File file = FS.open(fileName, "w");
+  Serial.printf("Creating file /d/%05d.txt\n", freeFileIndex);
+  file = FS.open(fileName, "w");
 
   if (!file) {
     Serial.println("file creation failed");
-  }
-
-  // for (int i = 0 ; i < img_index ; i++){
-  //   file.print((char)image_data[i]);
-  // }
-  file.write(image_data, img_index);
-  file.close();
-
-  perf = millis() - perf;
-  Serial.printf("File /d/%05d.txt written in %lums\n", freeFileIndex, perf);
-
-  freeFileIndex++;
-
-  // ToDo: Handle percentages
-  int percUsed = fs_info();
-  if (percUsed > 5) {
-    resetValues();
-  } else {
-    Serial.println("no more space on printer\nrebooting...");
-    ESP.restart();
   }
 }
 
@@ -155,6 +159,8 @@ void espprinter_setup() {
     full();
   }
 
+  // createNextFile();
+
   /* Setup */
   gpb_serial_io_init(sizeof(gbp_serialIO_raw_buffer), gbp_serialIO_raw_buffer);
 
@@ -169,18 +175,58 @@ void espprinter_setup() {
 
 #ifdef USE_OLED
 void showPrinterStats() {
-  char printed[20];
-  int percUsed = fs_info();
-  sprintf(printed, "%3d files", freeFileIndex - 1);
-  oled_msg(((String)percUsed)+((char)'%')+" remaining",printed);
-  oled_drawLogo();
+  // char printed[20];
+  // int percUsed = fs_info();
+  // sprintf(printed, "%3d files", freeFileIndex - 1);
+  // oled_msg(((String)percUsed)+((char)'%')+" remaining",printed);
+  // oled_drawLogo();
 }
 #endif
 
 inline void gbp_packet_capture_loop() {
+
+  if (gbp_serial_io_print_isr() && gbp_serial_io_should_print()) {
+
+    #define WRITE_CHUNK_SIZE 512
+
+    writeTo = min(writeFrom + WRITE_CHUNK_SIZE, img_index);
+
+    Serial.print(writeFrom);
+    Serial.print(" -> ");
+    Serial.print(writeTo);
+    Serial.print(" --> ");
+    Serial.print(img_index);
+
+    // char writeChunk[WRITE_CHUNK_SIZE];
+
+    // for (int i = writeFrom; i < writeTo; i++) {
+    //   // writeChunk[i - writeFrom] = (char)image_data[i];
+    //   if (file) {
+    //     file.print((char)image_data[i]);
+    //   } else {
+    //     Serial.println('No File!!!!');
+    //   }
+    // }
+
+    Serial.println(" !");
+
+    if (writeTo == img_index) {
+      Serial.println("Done");
+      // createNextFile();
+      resetValues();
+      Serial.println("Don2");
+      gbp_serial_io_print_done();
+    } else {
+      Serial.println("Moar");
+      writeFrom = writeTo;
+    }
+
+
+    gbp_serial_io_print_isr_done();
+    return;
+  }
+
   /* tiles received */
-  static uint32_t byteTotal = 0;
-  static uint32_t pktTotalCount = 0;
   static uint32_t pktByteIndex = 0;
   static uint16_t pktDataLength = 0;
   const size_t dataBuffCount = gbp_serial_io_dataBuff_getByteCount();
@@ -188,7 +234,6 @@ inline void gbp_packet_capture_loop() {
     ((pktByteIndex != 0) && (dataBuffCount > 0)) ||
     ((pktByteIndex == 0) && (dataBuffCount >= 6))
   ) {
-    const char nibbleToCharLUT[] = "0123456789ABCDEF";
     uint8_t data_8bit = 0;
 
     // Display the data payload encoded in hex
@@ -197,11 +242,6 @@ inline void gbp_packet_capture_loop() {
       if (pktByteIndex == 0) {
         pktDataLength = gbp_serial_io_dataBuff_getByte_Peek(4);
         pktDataLength |= (gbp_serial_io_dataBuff_getByte_Peek(5)<<8)&0xFF00;
-        chkHeader = gbp_serial_io_dataBuff_getByte_Peek(2);
-
-        if (chkHeader == 1) {
-          oled_msg("Receiving data...");
-        }
 
         digitalWrite(LED_BLINK_PIN, HIGH);
       }
@@ -209,43 +249,21 @@ inline void gbp_packet_capture_loop() {
       // Print Hex Byte
       data_8bit = gbp_serial_io_dataBuff_getByte();
 
-      if (chkHeader == 2) {
-        image_data[img_index] = (byte)data_8bit;
-        img_index++;
+      // fill the image data buffer
+      image_data[img_index] = (byte)data_8bit;
+      img_index++;
 
-        cmdPRNT = cmdPRNT+((char)nibbleToCharLUT[(data_8bit>>4)&0xF]) + ((char)nibbleToCharLUT[(data_8bit>>0)&0xF]);
-        //Serial.print((String)data_8bit);
-      } else if (chkHeader == 1 || (chkHeader == 4 && pktDataLength > 9)) {
-        image_data[img_index] = (byte)data_8bit;
-        img_index++;
-        //Serial.print((char)nibbleToCharLUT[(data_8bit>>4)&0xF]);
-        //Serial.print((char)nibbleToCharLUT[(data_8bit>>0)&0xF]);
-      }
-
-      // Splitting packets for convenience
       if ((pktByteIndex > 5) && (pktByteIndex >= (9 + pktDataLength))) {
         digitalWrite(LED_BLINK_PIN, LOW);
-        if (cmdPRNT.length() == 28) {
-          if (((int)(cmdPRNT[15]-'0')) >= 1) {
-            storeData(image_data);
-            chkHeader = 99;
-          }
-          cmdPRNT = "";
-        }
-        //Serial.println("");
         pktByteIndex = 0;
-        pktTotalCount++;
       } else {
-        //Serial.print((char)' ');
         pktByteIndex++; // Byte hex split counter
-        byteTotal++; // Byte total counter
       }
     }
   }
 }
 
 void espprinter_loop() {
-  static uint16_t sioWaterline = 0;
 
   gbp_packet_capture_loop();
 
