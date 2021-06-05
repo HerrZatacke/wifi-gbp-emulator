@@ -11,6 +11,14 @@ void fs_setup() {
     FS.gc();
   }
   Serial.println(" done");
+
+  Dir dir = SPIFFS.openDir("/w");
+  while (dir.next ()) {
+    Serial.print(dir.fileSize());
+    Serial.print("\t\t");
+    Serial.println(dir.fileName());
+  }
+
 }
 
 int fs_info() {
