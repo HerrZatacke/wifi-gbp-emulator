@@ -3,8 +3,12 @@ ESP8266WebServer server(80);
 
 #define DUMP_CHUNK_SIZE 90
 
-void send404() {
+void defaultHeaders() {
   server.sendHeader("Access-Control-Allow-Origin", "*");
+}
+
+void send404() {
+  defaultHeaders();
   server.send(404, "text/html", "<html><body><h1>404 - Not Found</h1><p>You probably forgot to upload the additional data.</p><br><a href=\"https://github.com/HerrZatacke/wifi-gbp-emulator/blob/master/beginner_setup_guide.md#14-install-arduino-esp8266fs-plugin\">Please Check Step 1.4 - 1.6</a></body></html>");
 }
 
@@ -26,7 +30,7 @@ void clearDumps() {
 
   char out[24];
   sprintf(out, "{\"deleted\":%d}", dumpcount);
-  server.sendHeader("Access-Control-Allow-Origin", "*");
+  defaultHeaders();
   server.send(200, "application/json", out);
 }
 
@@ -70,7 +74,7 @@ void getDumpsList() {
   char fs[100];
   sprintf(fs, "{\"total\":%d,\"used\":%d,\"available\":%d,\"maximages\":%d,\"dumpcount\":%d}", total, used, avail, MAX_IMAGES, dumpcount);
 
-  server.sendHeader("Access-Control-Allow-Origin", "*");
+  defaultHeaders();
   server.send(200, "application/json", "{\"fs\":" + String(fs) + ",\"dumps\":[" + dumpList + "]}");
 }
 
@@ -102,17 +106,17 @@ void getEnv() {
 #endif
   );
 
-  server.sendHeader("Access-Control-Allow-Origin", "*");
+  defaultHeaders();
   server.send(200, "application/json", out);
 }
 
 void getConfig() {
-  server.sendHeader("Access-Control-Allow-Origin", "*");
+  defaultHeaders();
   server.send(200, "application/json", wifiGetConfig());
 }
 
 void setConfig() {
-  server.sendHeader("Access-Control-Allow-Origin", "*");
+  defaultHeaders();
 
   // Check if body received
   if (server.hasArg("plain") == false) {
@@ -129,7 +133,7 @@ void handleDump() {
 
   if(FS.exists(path)) {
     File file = FS.open(path, "r");
-    server.sendHeader("Access-Control-Allow-Origin", "*");
+    defaultHeaders();
 
     server.setContentLength(file.available() * 3);
     server.send(200, "text/plain");
@@ -176,7 +180,7 @@ bool handleFileRead(String path) {
     }
 
     File file = FS.open(path, "r");
-    server.sendHeader("Access-Control-Allow-Origin", "*");
+    defaultHeaders();
     size_t sent = server.streamFile(file, contentType);
     file.close();
     return true;

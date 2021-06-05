@@ -10,6 +10,7 @@ If you have any questions along the way or need help troubleshooting please refe
 
 ### Essential 
 * Windows/Mac/Linux-PC
+* Arduino IDE in a [current version](https://www.arduino.cc/en/software/) (1.8.x has been used successfully)
 * ESP8266 Microcontroller
 * Micro USB Cable
 * Breakout Board
