@@ -19,6 +19,8 @@ uint32_t img_index=0x00;
 // Dev Note: Gamboy camera sends data payload of 640 bytes usually
 #define GBP_BUFFER_SIZE 650
 
+#define WRITE_CHUNK_SIZE 128
+
 /* Serial IO */
 // This circular buffer contains a stream of raw packets from the gameboy
 uint8_t gbp_serialIO_raw_buffer[GBP_BUFFER_SIZE] = {0};
@@ -75,7 +77,7 @@ void resetValues() {
   writeFrom = 0x00;
   writeTo = 0x00;
 
-  file.close();
+  // file.close();
 
   // ToDo: Handle percentages
   //int percUsed = fs_info();
@@ -109,22 +111,49 @@ void resetValues() {
   Serial.println("e");
 }
 
-void createNextFile() {
-  if (file) {
-    file.close();
-    Serial.printf("File /d/%05d.txt closed\n", freeFileIndex);
-    freeFileIndex++;
-  }
-
+void appendData(char *image_data) {
   char fileName[31];
   sprintf(fileName, "/d/%05d.txt", freeFileIndex);
-  Serial.printf("Creating file /d/%05d.txt\n", freeFileIndex);
-  file = FS.open(fileName, "w");
+  Serial.printf("Opening file /d/%05d.txt\n", freeFileIndex);
+
+  detachInterrupt(digitalPinToInterrupt(GB_SCLK));
+
+  file = FS.open(fileName, "a");
 
   if (!file) {
     Serial.println("file creation failed");
+    return;
   }
+
+  file.write(image_data, WRITE_CHUNK_SIZE);
+
+  file.close();
+  Serial.println("file closed");
+
+  /* Attach ISR */
+  #ifdef GBP_FEATURE_USING_RISING_CLOCK_ONLY_ISR
+  attachInterrupt( digitalPinToInterrupt(GB_SCLK), serialClock_ISR, RISING);  // attach interrupt handler
+  #else
+  attachInterrupt( digitalPinToInterrupt(GB_SCLK), serialClock_ISR, CHANGE);  // attach interrupt handler
+  #endif
 }
+
+// void createNextFile() {
+//   if (file) {
+//     file.close();
+//     Serial.printf("File /d/%05d.txt closed\n", freeFileIndex);
+//     freeFileIndex++;
+//   }
+//
+//   char fileName[31];
+//   sprintf(fileName, "/d/%05d.txt", freeFileIndex);
+//   Serial.printf("Creating file /d/%05d.txt\n", freeFileIndex);
+//   file = FS.open(fileName, "w");
+//
+//   if (!file) {
+//     Serial.println("file creation failed");
+//   }
+// }
 
 // Blink if printer is full.
 void full() {
@@ -187,8 +216,6 @@ inline void gbp_packet_capture_loop() {
 
   if (gbp_serial_io_print_isr() && gbp_serial_io_should_print()) {
 
-    #define WRITE_CHUNK_SIZE 512
-
     writeTo = min(writeFrom + WRITE_CHUNK_SIZE, img_index);
 
     Serial.print(writeFrom);
@@ -197,16 +224,18 @@ inline void gbp_packet_capture_loop() {
     Serial.print(" --> ");
     Serial.print(img_index);
 
-    // char writeChunk[WRITE_CHUNK_SIZE];
+    char writeChunk[WRITE_CHUNK_SIZE];
 
-    // for (int i = writeFrom; i < writeTo; i++) {
-    //   // writeChunk[i - writeFrom] = (char)image_data[i];
+    for (int i = writeFrom; i < writeTo; i++) {
+      writeChunk[i - writeFrom] = (char)image_data[i];
     //   if (file) {
     //     file.print((char)image_data[i]);
     //   } else {
     //     Serial.println('No File!!!!');
     //   }
-    // }
+    }
+
+    appendData(writeChunk);
 
     Serial.println(" !");
 

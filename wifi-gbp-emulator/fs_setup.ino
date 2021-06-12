@@ -12,7 +12,16 @@ void fs_setup() {
   }
   Serial.println(" done");
 
+  Serial.println("\nWebfiles:");
   Dir dir = SPIFFS.openDir("/w");
+  while (dir.next ()) {
+    Serial.print(dir.fileSize());
+    Serial.print("\t\t");
+    Serial.println(dir.fileName());
+  }
+
+  Serial.println("\nDumped Data:");
+  dir = SPIFFS.openDir("/d");
   while (dir.next ()) {
     Serial.print(dir.fileSize());
     Serial.print("\t\t");
