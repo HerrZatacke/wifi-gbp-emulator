@@ -13,9 +13,8 @@
 
 // Uncomment if using an adafruit oled display
 // #define USE_OLED
-// Alternative OLED Pins
-// #define OLED_SDA 0
-// #define OLED_SCL 4
+// Alternative OLED Address
+// #define OLED_ADRESS 0x3C < See datasheet for Address; 0x3D for 128x64, 0x3C for 128x32
 // you can invert the display to easily spot the actual dimensions
 // #define OLED_INVERT
 // You can rotate the display by 180°

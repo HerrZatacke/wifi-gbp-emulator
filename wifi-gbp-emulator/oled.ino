@@ -12,11 +12,8 @@
 #define OLED_RESET -1
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
-#ifndef OLED_SDA
-#define OLED_SDA 0
-#endif
-#ifndef OLED_SCL
-#define OLED_SCL 4
+#ifndef OLED_ADRESS
+#define OLED_ADDRESS 0x3C
 #endif
 
 #define PRINTER_ICON_HEIGHT 27
@@ -76,10 +73,10 @@ static const unsigned char PROGMEM icon_wifi_bmp[] =
 };
 
 void oled_setup() {
-  Wire.begin(OLED_SDA, OLED_SCL);
+Serial.begin(9600);
 
   // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
-  if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { // Address 0x3C for 128x32
+  if(!display.begin(SSD1306_SWITCHCAPVCC, OLED_ADDRESS)) {
     Serial.println(F("SSD1306 allocation failed"));
     for(;;); // Don't proceed, loop forever
   }
