@@ -29,8 +29,6 @@ void setupWifi() {
           const char *ssid = networkSetting["ssid"].as<const char*>();
           const char *password = networkSetting["psk"].as<const char*>();
 
-          Serial.println(ssid);
-
           if (ssid != "null" && ssid != "" && password != "") {
             wifiMulti.addAP(ssid, password);
             hasNetworkSettings = true;
