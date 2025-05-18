@@ -104,6 +104,7 @@ Additionally an [OLED Display](https://github.com/HerrZatacke/wifi-gbp-emulator/
 Enhance performance while saving (maybe by constantly writing all data to a single file instead of buffering and flushing it) 
 
 ## Links / Research
+* Best "all in one" pcb for this project is [cristofercruz's gbp-esp-shield-pcb](https://github.com/cristofercruz/gbp-esp-shield-pcb)
 * Original GPB-Emulator by [mofosyne: Arduino Gameboy Printer Emulator](https://github.com/mofosyne/arduino-gameboy-printer-emulator)  
 * Tutorial on how to work with an ESP8266 by [ttapa: ESP8266 Beginner's Guide](https://tttapa.github.io/ESP8266/Chap01%20-%20ESP8266.html)  
 * Potentially faster library for data transfer [applefreak/esp8266-gameboy-printer](https://github.com/applefreak/esp8266-gameboy-printer)
