@@ -17,7 +17,7 @@
 #define DEFAULT_MDNS_NAME "gameboyprinter"
 #endif
 #ifndef WIFI_CONNECT_TIMEOUT
-#define WIFI_CONNECT_TIMEOUT 10000
+#define WIFI_CONNECT_TIMEOUT 20000
 #endif
 #ifndef MAX_IMAGES
 #define MAX_IMAGES 150

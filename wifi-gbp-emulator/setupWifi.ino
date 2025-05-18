@@ -29,6 +29,8 @@ void setupWifi() {
           const char *ssid = networkSetting["ssid"].as<const char*>();
           const char *password = networkSetting["psk"].as<const char*>();
 
+          Serial.println(ssid);
+
           if (ssid != "null" && ssid != "" && password != "") {
             wifiMulti.addAP(ssid, password);
             hasNetworkSettings = true;
@@ -63,6 +65,7 @@ void setupWifi() {
   if (hasNetworkSettings) {
     Serial.print("Connecting to wifi ");
     WiFi.mode(WIFI_STA);
+    WiFi.persistent(false);
 
     bool connectionBlink = false;
     unsigned int connTimeout = millis() + WIFI_CONNECT_TIMEOUT;
