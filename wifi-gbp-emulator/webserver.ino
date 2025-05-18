@@ -152,6 +152,29 @@ bool handleFileRead(String path) {
 
   if (path.endsWith("/")) {
     path += "index.html";
+  } else if (path.indexOf('.') == -1) {
+    path += "/index.html";
+  }
+
+  // Check pathmap.txt for remapped paths
+  File mapFile = FS.open("/pathmap.txt", "r");
+  if (mapFile) {
+    while (mapFile.available()) {
+      String line = mapFile.readStringUntil('\n');
+      line.trim(); // Remove leading/trailing whitespace
+      int sep = line.indexOf(';');
+      if (sep > 0) {
+        String requestPath = "/w/" + line.substring(0, sep);
+        String mappedPath = "/w/" + line.substring(sep + 1);
+        if (path == requestPath) {
+          path = mappedPath;
+          break;
+        }
+      }
+    }
+    mapFile.close();
+  } else {
+    Serial.println("pathmap.txt not found");
   }
 
   String pathWithGz = path + ".gz";
@@ -178,8 +201,20 @@ String getContentType(String filename) {
   if (filename.endsWith(".html")) return "text/html";
   else if (filename.endsWith(".css")) return "text/css";
   else if (filename.endsWith(".js")) return "application/javascript";
+  else if (filename.endsWith(".mjs")) return "application/javascript";
+  else if (filename.endsWith(".json")) return "application/json";
+  else if (filename.endsWith(".txt")) return "text/plain";
   else if (filename.endsWith(".ico")) return "image/x-icon";
-  return "text/plain";
+  else if (filename.endsWith(".svg")) return "image/svg+xml";
+  else if (filename.endsWith(".png")) return "image/png";
+  else if (filename.endsWith(".jpg")) return "image/jpeg";
+  else if (filename.endsWith(".jpeg")) return "image/jpeg";
+  else if (filename.endsWith(".gif")) return "image/gif";
+  else if (filename.endsWith(".woff")) return "font/woff";
+  else if (filename.endsWith(".woff2")) return "font/woff2";
+  else if (filename.endsWith(".ttf")) return "font/ttf";
+  else if (filename.endsWith(".otf")) return "font/otf";
+  return "application/octet-stream";
 }
 
 void webserver_setup() {
