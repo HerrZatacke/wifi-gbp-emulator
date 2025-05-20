@@ -187,6 +187,7 @@ bool handleFileRead(String path) {
 
     File file = FS.open(path, "r");
     defaultHeaders();
+    server.sendHeader("Cache-Control", "max-age=3600");
     size_t sent = server.streamFile(file, contentType);
     file.close();
     return true;
