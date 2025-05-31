@@ -156,6 +156,11 @@ bool handleFileRead(String path) {
     path += "/index.html";
   }
 
+  if (path == "/w/remote.html") {
+    Serial.println("rewriting /w/remote.html");
+    path = "/w/remote/index.html";
+  }
+
   // Check pathmap.txt for remapped paths
   File mapFile = FS.open("/pathmap.txt", "r");
   if (mapFile) {
