@@ -12,13 +12,34 @@ void fs_setup() {
   }
   Serial.println(" done");
 
-  Dir dir = SPIFFS.openDir("/w");
-  while (dir.next ()) {
-    Serial.print(dir.fileSize());
-    Serial.print("\t\t");
-    Serial.println(dir.fileName());
-  }
 
+  File mapFile = FS.open("/pathmap.txt", "r");
+  if (mapFile) {
+    while (mapFile.available()) {
+      String line = mapFile.readStringUntil('\n');
+      line.trim(); // Remove leading/trailing whitespace
+      int sep = line.indexOf(';');
+      if (sep > 0) {
+        String mappedPath = "/w/" + line.substring(sep + 1) + ".gz";
+        Serial.print(mappedPath);
+        Serial.print("\t\t");
+        if(!FS.exists(mappedPath)) {
+          Serial.println("missing");
+        } else {
+          Serial.println("found");
+        }
+      }
+    }
+    mapFile.close();
+  } else {
+    Serial.println("------------------------\n No 'pathmap.txt' found \n------------------------");
+    Dir dir = SPIFFS.openDir("/w");
+    while (dir.next()) {
+      Serial.print(dir.fileSize());
+      Serial.print("\t\t");
+      Serial.println(dir.fileName());
+    }
+  }
 }
 
 void fs_info() {
