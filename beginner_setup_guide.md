@@ -4,7 +4,7 @@ The WiFi Gameboy Printer Emulator (wifi-gbp-emulator) is an easy-to-build easy-t
 
 This guide provides a basic step by step guide on how to get your wifi-gbp-emulator running. Generally the project is accessible and beginner friendly and required hardware is affordable and easy to obtain.
 
-If you have any questions along the way or need help troubleshooting please refer to the [Gameboy Camera Club Discord Server](https://bit.ly/gbccd). 
+If you have any questions along the way or need help troubleshooting please refer to the [Gameboy Camera Club Discord Server]([https://bit.ly/gbccd](https://discord.gg/eX3gFPYMNv)). 
 
 ## Hardware and tools
 
