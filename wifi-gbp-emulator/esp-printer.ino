@@ -13,6 +13,7 @@ byte image_data[11520] = {};
 uint32_t img_index = 0;
 
 unsigned long lastByteReceived = 0;
+bool displayNeedsUpdate = true;
 unsigned long blinkClockHit = 0;
 bool blinkCycle = false;
 
@@ -127,6 +128,7 @@ void resetValues() {
   // Turn LED ON
   digitalWrite(LED_BLINK_PIN, false);
   Serial.println("Printer ready.");
+  displayNeedsUpdate = true;
 }
 
 void storeData(byte *image_data) {
@@ -209,6 +211,10 @@ void showPrinterStats() {
 void espprinter_loop() {
   if (lastByteReceived != 0 && lastByteReceived + 500 < millis()) {
     resetValues();
+  }
+
+  if (displayNeedsUpdate) {
+    displayNeedsUpdate = false;
     #ifdef USE_OLED
     showPrinterStats();
     #endif
