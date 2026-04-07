@@ -22,6 +22,9 @@
 #ifndef MAX_IMAGES
 #define MAX_IMAGES 150
 #endif
+#ifndef FULL_PATHMAP_CHECK
+#define FULL_PATHMAP_CHECK 0
+#endif
 #ifndef WIFI_BLINK_DELAY
 #define WIFI_BLINK_DELAY 2000
 #endif
