@@ -1,7 +1,11 @@
 import 'reset-css/reset.css';
 import './styles/style.scss';
 import { $fetch } from 'ofetch';
-import { URL_ENV_INFO, URL_LIST_DUMPS } from './consts.ts';
+import {
+  URL_ENV_INFO,
+  URL_GET_WIFICONFIG,
+  URL_LIST_DUMPS,
+} from './consts.ts';
 
 (async () => {
   const footer = document.querySelector('.footer') as HTMLElement;
@@ -13,5 +17,6 @@ import { URL_ENV_INFO, URL_LIST_DUMPS } from './consts.ts';
 
 
   const dumpsList = await $fetch(URL_LIST_DUMPS);
-  main.innerHTML = `<pre>${JSON.stringify(dumpsList, null, 2)}</pre>`;
+  const wifiConfig = await $fetch(URL_GET_WIFICONFIG);
+  main.innerHTML = `<pre>${JSON.stringify({ dumpsList, wifiConfig }, null, 2)}</pre>`;
 })();
