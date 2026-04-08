@@ -1,13 +1,13 @@
 import js from '@eslint/js';
 import { defineConfig } from 'eslint/config';
 import importPlugin from 'eslint-plugin-import';
-import {browser as globals} from 'globals';
+import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 const eslintConfig = defineConfig([
   js.configs.recommended,
   ...tseslint.configs.recommended,
-  { languageOptions: { globals } },
+  { languageOptions: { globals: globals.browser } },
   {
     plugins: {
       import: importPlugin,
@@ -38,7 +38,7 @@ const eslintConfig = defineConfig([
       ],
       'import/consistent-type-specifier-style': ['error', 'prefer-inline'],
     },
-    languageOptions: { globals },
+    languageOptions: { globals: globals.browser },
   },
 ]);
 
