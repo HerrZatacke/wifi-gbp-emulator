@@ -4,4 +4,5 @@ wifi-gbp-emulator/data/*
 !wifi-gbp-emulator/data/conf.sample.json
 /wifi-gbp-emulator/config.h
 frontend/node_modules
+frontend/.env
 /fs-out
