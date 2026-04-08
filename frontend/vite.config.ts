@@ -19,7 +19,7 @@ const input = fs.readdirSync(__dirname)
 
 export default defineConfig({
   build: {
-    outDir: '../fs/',
+    outDir: '../fs-out/',
     emptyOutDir: true,
     rolldownOptions: {
       input,

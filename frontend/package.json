@@ -5,7 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host",
-    "build": "tsc && vite build",
+    "build": "npm run build:clean && npm run build:build && npm run build:shorten",
+    "build:build": "tsc && vite build",
+    "build:clean": "rimraf ../fs-out && rimraf ../wifi-gbp-emulator/data/w",
+    "build:shorten": "node ./scripts/shortenStatic.mjs",
     "lint": "eslint ."
   },
   "devDependencies": {
@@ -16,6 +19,7 @@
     "globby": "^16.2.0",
     "ofetch": "^1.5.1",
     "reset-css": "^5.0.2",
+    "rimraf": "^6.1.3",
     "sass": "^1.99.0",
     "sass-embedded": "^1.99.0",
     "typescript": "^6.0.2",
