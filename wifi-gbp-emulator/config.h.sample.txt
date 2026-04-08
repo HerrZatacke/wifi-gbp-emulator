@@ -30,6 +30,9 @@
 // Just the delay between the WiFi-Mode "Pings" of the LED
 // #define WIFI_BLINK_DELAY 5000
 
+// scan pathmap.txt for mmissing files
+// #define FULL_PATHMAP_CHECK 1
+
 // Define different PINS depending on your hardware
 // #define LED_BLINK_PIN 2
 // #define GB_MISO 12
