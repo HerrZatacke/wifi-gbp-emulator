@@ -1,7 +1,7 @@
 import 'reset-css/reset.css';
-import '../styles/style.scss';
-import {$fetch} from "ofetch";
-import {URL_ENV_INFO, URL_LIST_DUMPS} from "./consts.ts";
+import './styles/style.scss';
+import { $fetch } from 'ofetch';
+import { URL_ENV_INFO, URL_LIST_DUMPS } from './consts.ts';
 
 (async () => {
   const footer = document.querySelector('.footer') as HTMLElement;
