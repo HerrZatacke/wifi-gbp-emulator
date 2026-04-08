@@ -1,0 +1,11 @@
+.wifi-config {
+  &__fields {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  &__save-button {
+    align-self: end;
+  }
+}

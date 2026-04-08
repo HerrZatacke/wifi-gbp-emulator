@@ -1,0 +1,17 @@
+.generic-input {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  &__label {
+    font-size: 13px;
+  }
+
+  &__input {
+    padding: 12px 16px;
+    font-size: 16px;
+    background: var(--color-button-background);
+    color: var(--color-button-text);
+    border: none;
+  }
+}

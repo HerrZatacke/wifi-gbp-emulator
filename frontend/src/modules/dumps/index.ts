@@ -2,7 +2,7 @@ import './index.scss';
 import { saveAs } from 'file-saver';
 import { $fetch } from 'ofetch';
 import { URL_CLEAR_DUMPS, URL_LIST_DUMPS } from '../../consts.ts';
-import { type ClearDumpsResponse, type ListDumpsResponse } from '../../types/responses.ts';
+import { type ClearDumpsResponse, type ListDumpsResponse } from '../../types/api.ts';
 import { genericButton } from '../generic/button';
 
 const refreshButton = genericButton({
