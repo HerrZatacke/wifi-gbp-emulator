@@ -5,6 +5,7 @@ interface GenericInputProps {
   initialValue: string;
   type?: string;
   className?: string;
+  readonly?: boolean;
 }
 
 export interface GenericInput {
@@ -17,6 +18,7 @@ export const genericInput = ({
   initialValue,
   type,
   className,
+  readonly,
 }: GenericInputProps): GenericInput => {
   const node = document.createElement('label');
   node.className = `generic-input ${className}`;
@@ -27,6 +29,7 @@ export const genericInput = ({
   labelSpan.innerHTML = title;
   input.value = initialValue;
   input.type = type || 'text';
+  input.readOnly = readonly || false;
 
   input.addEventListener('blur', () => {
     input.value = input.value.trim();

@@ -45,3 +45,5 @@ export interface WifiConfigUpdateRequest {
   networks?: (NetworkUpdateRequest | NetworkDeleteRequest)[];
   ap?: AccespointUpdateRequest;
 }
+
+export type UpdateFn = (request: NetworkUpdateRequest | NetworkDeleteRequest) => Promise<void>;

@@ -1,4 +1,8 @@
 .wifi-config {
+  display: flex;
+  flex-direction: column;
+  gap: 64px;
+
   &__fields {
     display: flex;
     flex-direction: column;
@@ -7,5 +11,11 @@
 
   &__save-button {
     align-self: end;
+  }
+
+  &__networks {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
   }
 }
