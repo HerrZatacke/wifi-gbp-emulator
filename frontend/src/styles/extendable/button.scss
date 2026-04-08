@@ -25,4 +25,9 @@
     cursor: pointer;
     box-shadow: 0 6px 7px -4px var(--color-shadow);
   }
+
+  &:disabled {
+    background-color: var(--color-button-background-disabled);
+    color: var(--color-button-text-disabled);
+  }
 }

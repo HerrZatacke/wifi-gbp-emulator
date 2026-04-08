@@ -12,9 +12,11 @@
     "lint": "eslint ."
   },
   "devDependencies": {
+    "@types/file-saver": "^2.0.7",
     "@types/node": "^20",
     "eslint": "^9",
     "eslint-plugin-import": "^2.32.0",
+    "file-saver": "^2.0.5",
     "globals": "^17.4.0",
     "globby": "^16.2.0",
     "ofetch": "^1.5.1",
