@@ -11,8 +11,8 @@ awaitWebApp()
     const footerNode = document.querySelector('.footer') as HTMLElement;
 
     if (!openedFromWebapp) {
-      mainNode.appendChild(wifiConfig());
       mainNode.appendChild(dumps());
+      mainNode.appendChild(wifiConfig());
       footerNode.appendChild(footer());
     } else {
       // ToDo: add comms logic with webapp
