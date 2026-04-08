@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { defineConfig } from 'vite';
 import { $fetch } from 'ofetch';
+import { defineConfig } from 'vite';
 
 const targetUrl = 'http://192.168.0.5';
 
@@ -23,7 +23,7 @@ export default defineConfig({
     emptyOutDir: true,
     rolldownOptions: {
       input,
-    }
+    },
   },
   plugins: [
     {
@@ -33,7 +33,7 @@ export default defineConfig({
         let initialResponse: object | null = null;
         try {
           initialResponse = await $fetch(`${targetUrl}/env.json`, { timeout: 1000 });
-        } catch {}
+        } catch { /**/ }
 
         if (!initialResponse) {
           console.warn(`Device at ${targetUrl} is not reachable`);
