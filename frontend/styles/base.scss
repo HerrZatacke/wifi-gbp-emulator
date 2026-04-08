@@ -1,0 +1,54 @@
+@use 'extendable/button';
+* { box-sizing: border-box; }
+button { @extend %button; }
+a { color: inherit; }
+svg { fill: currentColor; }
+
+:root {
+  --color-background: #111;
+  --color-text: #aaa;
+
+  --color-button-background: #333;
+  --color-button-text: #ddd;
+  --color-shadow: #999;
+}
+
+pre {
+  font-family: monospace;
+  white-space: pre;
+}
+
+body {
+  font-family: sans-serif;
+  margin: 16px;
+  min-width: 360px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: var(--color-background);
+  color: var(--color-text);
+}
+
+.header {
+  margin: 0;
+  padding: 8px;
+  text-align: center;
+}
+
+h1 {
+  font-weight: bold;
+  font-size: 28px;
+  line-height: 34px;
+  position: relative;
+  margin: 0;
+  padding: 0 28px;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 200px;
+  font-size: 12px;
+  padding: 8px 4px;
+  opacity: 50%;
+}

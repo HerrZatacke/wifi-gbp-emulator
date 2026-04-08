@@ -1,0 +1,28 @@
+%button {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  font-family: inherit;
+  background-color: var(--color-button-background);
+  color: var(--color-button-text);
+  font-size: 18px;
+  line-height: 16px;
+  text-decoration: none;
+  padding: 12px 18px;
+  border-radius: 8px;
+  box-shadow: 0 3px 6px -4px var(--color-shadow);
+  transition: box-shadow ease-in-out 150ms;
+
+  // Make all events always go to the button
+  > * {
+    pointer-events: none;
+  }
+
+  &:not(:disabled):hover {
+    cursor: pointer;
+    box-shadow: 0 6px 7px -4px var(--color-shadow);
+  }
+}
