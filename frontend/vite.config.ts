@@ -51,9 +51,19 @@ export default defineConfig(({ mode }) => {
               req.url?.startsWith('/env.json')
             ) {
               try {
+                let body: Buffer<ArrayBuffer> | undefined;
+                if (req.method === 'POST') {
+                  const chunks: Uint8Array[] = [];
+                  for await (const chunk of req) {
+                    chunks.push(chunk);
+                  }
+                  body = chunks.length ? Buffer.concat(chunks) : undefined;
+                }
+
                 const url = `${targetUrl}${req.url}`;
                 const targetResponse = await $fetch.raw(url, {
-                  method: 'GET',
+                  method: req.method,
+                  body,
                   responseType: 'arrayBuffer',
                   ignoreResponseError: true,
                 });
