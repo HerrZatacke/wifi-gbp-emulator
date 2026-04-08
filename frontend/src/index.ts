@@ -1,22 +1,20 @@
 import 'reset-css/reset.css';
 import './styles/style.scss';
-import { $fetch } from 'ofetch';
-import {
-  URL_ENV_INFO,
-  URL_GET_WIFICONFIG,
-  URL_LIST_DUMPS,
-} from './consts.ts';
+import { dumps } from './modules/dumps';
+import { footer } from './modules/footer';
+import { wifiConfig } from './modules/wifiConfig';
+import { awaitWebApp } from './tools/awaitWebApp.ts';
 
-(async () => {
-  const footer = document.querySelector('.footer') as HTMLElement;
-  const main = document.querySelector('.main') as HTMLElement;
+awaitWebApp()
+  .then((openedFromWebapp) => {
+    const mainNode = document.querySelector('.main') as HTMLElement;
+    const footerNode = document.querySelector('.footer') as HTMLElement;
 
-
-  const info = await $fetch(URL_ENV_INFO);
-  footer.innerHTML = `<pre>${JSON.stringify(info, null, 2)}</pre>`;
-
-
-  const dumpsList = await $fetch(URL_LIST_DUMPS);
-  const wifiConfig = await $fetch(URL_GET_WIFICONFIG);
-  main.innerHTML = `<pre>${JSON.stringify({ dumpsList, wifiConfig }, null, 2)}</pre>`;
-})();
+    if (!openedFromWebapp) {
+      mainNode.appendChild(wifiConfig());
+      mainNode.appendChild(dumps());
+      footerNode.appendChild(footer());
+    } else {
+      // ToDo: add comms logic with webapp
+    }
+  });
