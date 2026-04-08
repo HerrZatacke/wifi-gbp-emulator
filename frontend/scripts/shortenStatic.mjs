@@ -4,8 +4,8 @@ import crypto from 'node:crypto';
 import { globby } from 'globby';
 import copyAndGZ from './copyAndGZ.mjs';
 
-const inBaseDir = 'out';
-const outBaseDir = 'o';
+const inBaseDir = '../fs-out';
+const outBaseDir = '../wifi-gbp-emulator/data';
 const outFilesDir = path.posix.join(outBaseDir, 'w');
 
 const filesToShorten = await globby([

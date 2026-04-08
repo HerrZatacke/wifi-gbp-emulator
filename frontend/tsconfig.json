@@ -17,7 +17,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "moduleDetection": "force",
-    "incremental": true,
+    "incremental": false,
     "noEmit": true,
 
     /* Linting */
