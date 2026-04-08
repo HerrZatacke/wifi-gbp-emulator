@@ -1,0 +1,19 @@
+.wifi-network {
+  &__fields {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  &__buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    justify-content: flex-end;
+  }
+
+  &__delete-button,
+  &__save-button {
+    align-self: end;
+  }
+}
