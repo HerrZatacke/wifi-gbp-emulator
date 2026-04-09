@@ -5,7 +5,12 @@ import { globby } from 'globby';
 import copyAndGZ from './copyAndGZ.mjs';
 
 const inBaseDir = '../fs-out';
-const outBaseDir = '../wifi-gbp-emulator/data';
+const outBaseDir = process.env.SPIFFS_TARGET_FOLDER;
+
+if (!outBaseDir) {
+  throw new Error('SPIFFS_TARGET_FOLDER env var missing');
+}
+
 const outFilesDir = path.posix.join(outBaseDir, 'w');
 
 const filesToShorten = await globby([
