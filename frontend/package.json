@@ -8,7 +8,7 @@
     "build": "npm run build:clean && npm run build:build && npm run build:shorten",
     "build:build": "tsc && vite build",
     "build:clean": "rimraf ../fs-out && rimraf ../wifi-gbp-emulator/data/w",
-    "build:shorten": "node ./scripts/shortenStatic.mjs",
+    "build:shorten": "node --env-file=.env ./scripts/shortenStatic.mjs",
     "dumps:md": "md ..\\wifi-gbp-emulator\\data\\d",
     "dumps:copy": "copy ..\\assets\\*.bin ..\\wifi-gbp-emulator\\data\\d\\",
     "lint": "eslint ."
