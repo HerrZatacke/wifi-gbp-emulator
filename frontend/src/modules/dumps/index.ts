@@ -14,12 +14,12 @@ const refreshButton = genericButton({
 
 const clearButton = genericButton({
   onClick: clearDumps,
-  title: 'Clear Dumps',
+  title: 'Clear Images',
 });
 
 const downloadButton = genericButton({
   onClick: downloadDumps,
-  title: 'Download Dumps',
+  title: '',
 });
 
 const progress = document.createElement('progress');
@@ -39,7 +39,7 @@ async function refreshInfo(): Promise<ListDumpsResponse> {
   refreshButton.disabled = false;
   clearButton.disabled = !hasDumps;
   downloadButton.disabled = !hasDumps;
-  downloadButton.innerHTML = hasDumps ? `Download ${dumpsInfo.fs.dumpcount} Dumps` : 'Download Dumps';
+  downloadButton.innerHTML = hasDumps ? `Download ${dumpsInfo.fs.dumpcount} Images` : 'No Images';
 
   return dumpsInfo;
 }
@@ -103,9 +103,9 @@ const renderModule = async (moduleRoot: HTMLElement) => {
   await refreshInfo();
   const buttonGroup = document.createElement('div');
   buttonGroup.className = 'dumps__buttons';
-  buttonGroup.appendChild(refreshButton);
-  buttonGroup.appendChild(clearButton);
   buttonGroup.appendChild(downloadButton);
+  buttonGroup.appendChild(clearButton);
+  buttonGroup.appendChild(refreshButton);
   moduleRoot.appendChild(buttonGroup);
   moduleRoot.appendChild(progress);
 };
