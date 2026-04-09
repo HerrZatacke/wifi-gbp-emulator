@@ -39,12 +39,14 @@ jobs:
         if: steps.checkTag.outputs.exists == 'false'
         env:
           SPIFFS_TARGET_FOLDER: "../fs-esp"
-        run: npm run build
+        run: |
+          cd frontend
+          npm run build
 
       - name: Create data_w.zip for release 🗄
         if: steps.checkTag.outputs.exists == 'false'
         run: |
-          cd ../fs-esp
+          cd fs-esp
           zip -r ../data_w.zip *
           cd ..
 
