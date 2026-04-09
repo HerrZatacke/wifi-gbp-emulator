@@ -7,12 +7,26 @@ import tseslint from 'typescript-eslint';
 const eslintConfig = defineConfig([
   js.configs.recommended,
   ...tseslint.configs.recommended,
-  { languageOptions: { globals: globals.browser } },
+
+  {
+    files: ['**/*.{js,ts,mjs,mts}'],
+    languageOptions: {
+      globals: globals.browser,
+    },
+  },
+
+  {
+    files: ['scripts/**/*.{js,ts,mjs,mts}'],
+    languageOptions: {
+      globals: globals.node,
+    },
+  },
+
   {
     plugins: {
       import: importPlugin,
     },
-    files: ['**/*.{js,ts}'],
+    files: ['**/*.{js,ts,mjs,mts}'],
     rules: {
       'quotes': ['error', 'single'],
       'object-curly-spacing': ['error', 'always'],
@@ -38,7 +52,6 @@ const eslintConfig = defineConfig([
       ],
       'import/consistent-type-specifier-style': ['error', 'prefer-inline'],
     },
-    languageOptions: { globals: globals.browser },
   },
 ]);
 
