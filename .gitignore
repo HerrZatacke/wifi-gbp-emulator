@@ -6,3 +6,4 @@ wifi-gbp-emulator/data/*
 frontend/node_modules
 frontend/.env
 /fs-out
+/fs-esp
