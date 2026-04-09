@@ -1,0 +1,10 @@
+.remote-message {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  &__em {
+    font-style: italic;
+    color: var(--color-highlight);
+  }
+}

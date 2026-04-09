@@ -1,15 +1,15 @@
-import { type RemoteEnv, type RemotePrinterEvent } from '../types/remote.ts';
+import { type PrinterFunction } from '../consts.ts';
+import { type RemotePrinterEvent } from '../types/remote.ts';
 
 type cleanupFn = () => void;
 
-const startHeartbeat = ({ targetWindow }: RemoteEnv, commands: string[]): cleanupFn => {
+const startHeartbeat = (targetWindow: Window, commands: PrinterFunction[]): cleanupFn => {
 
   const heartBeat = () => {
     if (!targetWindow) { return; }
 
     targetWindow.postMessage({
       fromRemotePrinter: {
-        height: document.body.getBoundingClientRect().height,
         commands,
       },
     } as RemotePrinterEvent, '*');

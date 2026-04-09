@@ -1,15 +1,14 @@
+import { delay } from '../../tools/delay.ts';
 import {
   type PrinterImages,
-  type PrinterParams,
   type BlobResponse,
   type RemotePrinterEvent,
 } from '../../types/remote.ts';
 import fetchDumpRetry from '../fetchDumpRetry.ts';
 
-
 const fetchImages = async (
   targetWindow: Window,
-  { dumps }: PrinterParams,
+  dumps: string[],
 ): Promise<PrinterImages> => {
   const blobsdone: BlobResponse[] = [];
   let index = 0;
@@ -25,6 +24,8 @@ const fetchImages = async (
       } as RemotePrinterEvent, '*');
 
       blobsdone.push(blobResponse);
+
+      await delay(200);
     } catch (error) {
       console.warn(error);
       blobsdone.push({

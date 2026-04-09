@@ -1,11 +1,28 @@
-import { $fetch } from 'ofetch';
+import { $fetch, type FetchResponse } from 'ofetch';
 import { type BlobResponse } from '../types/remote.ts';
 
 const fetchDumpRetry = async (url: string, retries: number): Promise<BlobResponse> => {
-  let res: Response;
 
   try {
-    res = await $fetch.raw(url, { responseType: 'arrayBuffer' });
+    const res: FetchResponse<Blob> = await $fetch.raw(url, { responseType: 'blob' });
+    const headers: Record<string, string> = {};
+    res.headers.forEach((value: string, key: string) => {
+      headers[key] = value;
+    });
+
+    if (!res._data) {
+      throw new Error(`Could not fetch ${url}`);
+    }
+
+    return {
+      blob: res._data,
+      contentType: res.headers.get('content-type') || undefined,
+      meta: {
+        headers,
+      },
+      status: res.status,
+      ok: res.ok,
+    };
   } catch (error) {
     if (retries <= 1) {
       throw error;
@@ -14,23 +31,6 @@ const fetchDumpRetry = async (url: string, retries: number): Promise<BlobRespons
     return fetchDumpRetry(url, retries - 1);
   }
 
-  const headers: Record<string, string> = {};
-  res.headers.forEach((value: string, key: string) => {
-    headers[key] = value;
-  });
-
-  return (
-    res.blob()
-      .then((blob: Blob): BlobResponse => ({
-        blob,
-        contentType: res.headers.get('content-type') || undefined,
-        meta: {
-          headers,
-        },
-        status: res.status,
-        ok: res.ok,
-      }))
-  );
 };
 
 export default fetchDumpRetry;
