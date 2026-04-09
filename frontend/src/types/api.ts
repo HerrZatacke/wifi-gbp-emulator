@@ -47,3 +47,8 @@ export interface WifiConfigUpdateRequest {
 }
 
 export type UpdateFn = (request: NetworkUpdateRequest | NetworkDeleteRequest) => Promise<void>;
+
+export interface DetectRemote {
+  isRemote: boolean,
+  targetWindow: Window | null,
+}

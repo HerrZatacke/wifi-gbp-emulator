@@ -6,14 +6,13 @@ import {
   type PrinterImages,
   type PrinterParams,
   type PrinterStatusCommand,
-  type RemoteEnv,
   type RemotePrinterEvent,
 } from '../types/remote.ts';
 import checkPrinter from './commands/checkPrinter';
 import clearPrinter from './commands/clearPrinter';
 import fetchImages from './commands/fetchImages';
 
-const initCommands = ({ targetWindow }: RemoteEnv, remoteParams: URLSearchParams) => {
+const initCommands = (targetWindow: Window): PrinterCommand[] => {
   const commands: PrinterCommand[] = [
     {
       name: PrinterFunction.CHECKPRINTER,
@@ -44,7 +43,7 @@ const initCommands = ({ targetWindow }: RemoteEnv, remoteParams: URLSearchParams
     switch (printerCommand.command) {
       case PrinterFunction.FETCHIMAGES: {
         const commandFn = commands.find(({ name }) => name === printerCommand.command) as PrinterFetchImagesCommand;
-        fromRemotePrinter = await commandFn.fn(targetWindow, printerCommand.params as PrinterParams, remoteParams);
+        fromRemotePrinter = await commandFn.fn(targetWindow, (printerCommand.params as PrinterParams).dumps);
         break;
       }
 

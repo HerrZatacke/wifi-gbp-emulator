@@ -22,7 +22,6 @@ export interface PrinterImages {
 export type FromPrinterEvent = Partial<CheckPrinterStatus & PrinterImages & {
   progress: number,
   commands: PrinterFunction[],
-  height: number,
 }>
 
 export interface PrinterParams {
@@ -39,13 +38,6 @@ export type RemotePrinterEvent = Partial<{
   toRemotePrinter: ToPrinterEvent,
 }>
 
-export interface RemoteEnv {
-  targetWindow?: Window,
-  isIframe: boolean,
-  isPopup: boolean,
-  isRemote: boolean,
-}
-
 export interface PrinterStatusCommand {
   name: PrinterFunction.CLEARPRINTER | PrinterFunction.CHECKPRINTER,
   fn: () => Promise<CheckPrinterStatus>,
@@ -53,7 +45,7 @@ export interface PrinterStatusCommand {
 
 export interface PrinterFetchImagesCommand {
   name: PrinterFunction.FETCHIMAGES,
-  fn: (targetWindow: Window, params: PrinterParams, remoteParams: URLSearchParams) => Promise<PrinterImages>,
+  fn: (targetWindow: Window, dumps: string[]) => Promise<PrinterImages>,
 }
 
 export type PrinterCommand = PrinterStatusCommand | PrinterFetchImagesCommand;
