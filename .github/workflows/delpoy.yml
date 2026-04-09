@@ -31,6 +31,7 @@ jobs:
       - name: Install npm dependencies 🔗
         if: steps.checkTag.outputs.exists == 'false'
         run: |
+          cd frontend
           npm cache clear -f
           npm install
 
