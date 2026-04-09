@@ -1,6 +1,6 @@
 #include "wifi-gbp-emulator.h"
 
-#define VERSION "0.3.6"
+#define VERSION "0.3.7"
 
 // Variables used across multiple files, so they need to be defined here
 String mdnsName = DEFAULT_MDNS_NAME;
