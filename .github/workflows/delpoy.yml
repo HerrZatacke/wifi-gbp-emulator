@@ -41,6 +41,7 @@ jobs:
           SPIFFS_TARGET_FOLDER: "../fs-esp"
         run: |
           cd frontend
+          touch .env
           npm run build
 
       - name: Create data_w.zip for release 🗄
