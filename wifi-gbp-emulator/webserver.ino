@@ -158,7 +158,7 @@ bool handleFileRead(String path) {
 
   if (path == "/w/remote.html") {
     Serial.println("rewriting /w/remote.html");
-    path = "/w/remote/index.html";
+    path = "/w/index.html";
   }
 
   // Check pathmap.txt for remapped paths

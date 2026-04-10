@@ -1,0 +1,16 @@
+.headline {
+  position: relative;
+  margin: 0;
+  padding: 0;
+
+  &--level1 {
+    font-size: 28px;
+    line-height: 34px;
+  }
+
+  &--level2 {
+    font-size: 22px;
+    line-height: 26px;
+  }
+}
+
