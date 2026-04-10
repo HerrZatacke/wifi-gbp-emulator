@@ -9,7 +9,7 @@ import { genericButton } from '../generic/button';
 import { genericInput } from '../generic/input';
 
 const renderModule = async (moduleRoot: HTMLElement, updateFn: UpdateFn, config?: NetworkResponse) => {
-  const isNewNetwork = !Boolean(config);
+  const isNewNetwork = !config;
 
   const ssidInput = genericInput({
     title: 'Accesspoint SSID',

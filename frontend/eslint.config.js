@@ -1,4 +1,5 @@
 import js from '@eslint/js';
+import stylistic from '@stylistic/eslint-plugin';
 import { defineConfig } from 'eslint/config';
 import importPlugin from 'eslint-plugin-import';
 import globals from 'globals';
@@ -25,6 +26,7 @@ const eslintConfig = defineConfig([
   {
     plugins: {
       import: importPlugin,
+      '@stylistic': stylistic,
     },
     files: ['**/*.{js,ts,mjs,mts}'],
     rules: {
@@ -38,7 +40,19 @@ const eslintConfig = defineConfig([
       'no-unused-vars': 'off',
       '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
       'no-bitwise': ['error'],
-
+      '@stylistic/member-delimiter-style': [
+        'error',
+        {
+          multiline: {
+            delimiter: 'semi',
+            requireLast: true,
+          },
+          singleline: {
+            delimiter: 'semi',
+            requireLast: false,
+          },
+        },
+      ],
       'import/order': [
         'error',
         {

@@ -12,7 +12,7 @@ interface RefreshParams {
   ssidInput: GenericInput;
   pskInput: GenericInput;
   networks: HTMLDivElement;
-  updateFn: UpdateFn,
+  updateFn: UpdateFn;
 }
 
 const refreshForm = async ({
