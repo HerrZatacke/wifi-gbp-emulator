@@ -1,9 +1,16 @@
+@use '../../styles/extendable/button';
+
 .dumps {
   &__buttons {
     display: flex;
     flex-direction: row;
     gap: 10px;
-    justify-content: center;
+    justify-content: stretch;
+  }
+
+  &__button {
+    @extend %button;
+    flex-grow: 1;
   }
 
   &__progress {

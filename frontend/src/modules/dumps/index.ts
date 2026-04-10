@@ -10,16 +10,19 @@ const refreshButton = genericButton({
     await refreshInfo();
   },
   title: 'Refresh Info',
+  className: 'dumps__button',
 });
 
 const clearButton = genericButton({
   onClick: clearDumps,
   title: 'Clear Images',
+  className: 'dumps__button',
 });
 
 const downloadButton = genericButton({
   onClick: downloadDumps,
   title: '',
+  className: 'dumps__button',
 });
 
 const progress = document.createElement('progress');
