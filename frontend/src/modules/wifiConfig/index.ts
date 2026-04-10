@@ -1,8 +1,9 @@
 import './index.scss';
 import { $fetch } from 'ofetch';
 import { URL_GET_WIFICONFIG, URL_SET_WIFICONFIG } from '../../consts.ts';
-import {type UpdateFn, type WiFiConfigResponse, type WifiConfigUpdateRequest} from '../../types/api.ts';
+import { type UpdateFn, type WiFiConfigResponse, type WifiConfigUpdateRequest } from '../../types/api.ts';
 import { genericButton } from '../generic/button';
+import { headline } from '../generic/headline';
 import { GenericInput, genericInput } from '../generic/input';
 import { wifiNetwork } from '../wifiNetwork';
 
@@ -29,9 +30,10 @@ const refreshForm = async ({
 
   networks.innerText = '';
 
-  const headline = document.createElement('h2');
-  headline.innerText = 'Network Settings';
-  networks.appendChild(headline);
+  networks.appendChild(headline({
+    level: 2,
+    text: 'Network Settings',
+  }));
 
   for (const networkConfig of wifiConfig.networks) {
     networks.appendChild(wifiNetwork(updateFn, networkConfig));
@@ -104,11 +106,10 @@ const renderModule = async (moduleRoot: HTMLElement) => {
 
   const hostSettings = document.createElement('div');
   hostSettings.className = 'wifi-config__fields';
-
-  const headline = document.createElement('h2');
-  headline.innerText = 'Host Settings';
-
-  hostSettings.appendChild(headline);
+  hostSettings.appendChild(headline({
+    level: 2,
+    text: 'Host Settings',
+  }));
   hostSettings.appendChild(mdnsInput.node);
   hostSettings.appendChild(ssidInput.node);
   hostSettings.appendChild(pskInput.node);
