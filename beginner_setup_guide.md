@@ -33,8 +33,12 @@ Required Tools for this step:
 * ESP8266 Board
 
 ### 1.1 Install the Arduino IDE 
+
+> [!NOTE]  
+> As the `arduino-esp8266fs-plugin` (see 1.4) does not wirk with Arduino IDE 2, it is recommended to install the Legacy IDE (1.8.19)
+
 Download the Arduino IDE either from the Website (Windows/MacOS) from [here](https://www.arduino.cc/en/Main/Software) and follow the basic installation process.
- It is recommended for Linux Users to use your packet manager to install the IDE. 
+ It is recommended for Linux Users to use your packet manager to install the IDE.
 
 ### 1.2 Install ESP8266 in Arduino
 Start the Arduino IDE and navigate to ```File -> Preferences``` and add the following line to "Additional Boards Manager URLs:"
@@ -82,7 +86,7 @@ Connect your ESP8266 Board via USB to your PC. Navigate to ```File -> Open ...``
 
 To confirm that the code was downloaded correctly navigate to ```Sketch -> Verify/Compile```. Ensure at this point that the correct board is selected in ``` Tools -> Board ```. If everything works go to ```Sketch -> Upload``` and wait until the upload is finished.
 
-Now nagivate to ```Tools -> ESP8266 Sketch Data Upload``` and wait until its finished.
+Now nagivate to ```Tools -> ESP8266 Sketch Data Upload``` and wait until its finished. Make sure the flash size is big enough for the data.
 
 ### 1.7  Test the board
 
