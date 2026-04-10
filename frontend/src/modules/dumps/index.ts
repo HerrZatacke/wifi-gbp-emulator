@@ -4,6 +4,7 @@ import { $fetch } from 'ofetch';
 import { URL_CLEAR_DUMPS, URL_LIST_DUMPS } from '../../consts.ts';
 import { type ClearDumpsResponse, type ListDumpsResponse } from '../../types/api.ts';
 import { genericButton } from '../generic/button';
+import { webAppLink } from '../webAppLink';
 
 const refreshButton = genericButton({
   onClick: async () => {
@@ -24,6 +25,8 @@ const downloadButton = genericButton({
   title: '',
   className: 'dumps__button',
 });
+
+const appLink = webAppLink('dumps__button');
 
 const progress = document.createElement('progress');
 progress.className = 'dumps__progress';
@@ -109,6 +112,7 @@ const renderModule = async (moduleRoot: HTMLElement) => {
   buttonGroup.appendChild(downloadButton);
   buttonGroup.appendChild(clearButton);
   buttonGroup.appendChild(refreshButton);
+  buttonGroup.appendChild(appLink);
   moduleRoot.appendChild(buttonGroup);
   moduleRoot.appendChild(progress);
 };
